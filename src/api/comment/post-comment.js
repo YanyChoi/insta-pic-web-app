@@ -1,4 +1,4 @@
-import { Axios } from "axios";
+import Axios from "axios";
 import { API } from "../../utils/prefix";
 
 export const postRootComment = async ({
@@ -27,7 +27,7 @@ export const postRootComment = async ({
     };
   }
   const response = await Axios.post(request, body);
-  return response;
+  return response.data;
 };
 
 // {

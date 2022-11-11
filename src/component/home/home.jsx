@@ -1,5 +1,5 @@
-import { Grid } from "@mui/material";
-import Nav from "../nav/nav";
+import { Button, Grid } from "@mui/material";
+import { login } from "../../api/user/login";
 
 const Home = () => {
   return (
@@ -9,7 +9,15 @@ const Home = () => {
       justifyContent="center"
       style={{ width: "80vw", marginLeft: "20vw" }}
     >
-      Home
+      <Button
+        variant="contained"
+        onClick={async () => {
+          const result = await login("test", "pass");
+          console.log(result);
+        }}
+      >
+        Login
+      </Button>
     </Grid>
   );
 };

@@ -1,4 +1,4 @@
-import { Axios } from "axios";
+import Axios from "axios";
 import { API } from "../../utils/prefix";
 
 export const signUp = async ({
@@ -9,16 +9,27 @@ export const signUp = async ({
   url,
   userId,
 }) => {
+  const body = new FormData();
+
+  body.append(
+    "userDraft",
+    `{"introduction": ${introduction},
+    "name": ${name},
+    "pw": ${pw},
+    "url": ${url},
+    "userId": ${userId}}`,
+    { contentType: "application/json" }
+  );
+
+  body.append("profilePic", profilePic);
+
   const request = `${API}/user/signup`;
 
-  const response = await Axios.post(request, {
-    introduction: introduction,
-    name: name,
-    profilePic: profilePic,
-    pw: pw,
-    url: url,
-    userId: userId,
+  const response = await Axios.post(request, body, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
 
-  return response;
+  return response.data;
 };

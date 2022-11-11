@@ -11,5 +11,5 @@ export const postMedia = async (files, articleId) => {
       "Content-Type": "multipart/form-data",
     },
   });
-  return response;
+  return response.data;
 };

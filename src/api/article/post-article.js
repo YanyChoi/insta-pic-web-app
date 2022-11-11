@@ -1,4 +1,4 @@
-import { Axios } from "axios";
+import Axios from "axios";
 import { API } from "../../utils/prefix";
 
 export const postArticle = async ({ date, location, text, userId }) => {
@@ -10,8 +10,6 @@ export const postArticle = async ({ date, location, text, userId }) => {
     text,
     userId,
   });
-  
 
-  return response;
+  return response.data;
 };
-

@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Wrap from './component/wrap';
+import Login from './component/login/login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Wrap />
+    {/* <Login /> */}
   </React.StrictMode>
 );
 
