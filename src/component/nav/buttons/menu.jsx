@@ -1,6 +1,6 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import { Button, Popover, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Button, Popover } from "@mui/material";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../../context/context";
 import { logout } from "../../../utils/user-info-manage";

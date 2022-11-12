@@ -1,10 +1,25 @@
-import { Button, Grid } from "@mui/material";
-import { useContext } from "react";
-import { login } from "../../api/user/login";
+import { Grid } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { getFeedArticlesByUser } from "../../api/article/get-article";
 import { UserContext } from "../../context/context";
+import Article from "../article/article";
 
 const Home = () => {
-  const { userId, pw, name, profilePic, url, introduction } = useContext(UserContext);
+  const { userId } =
+    useContext(UserContext);
+
+  const [articleList, setArticleList] = useState([]);
+
+  const getArticleList = async (userId) => {
+    const articles = await getFeedArticlesByUser(userId);
+    setArticleList(articles.articleList);
+    return articles;
+  };
+
+  useEffect(() => {
+    getArticleList(userId);
+  }, []);
+
   return (
     <Grid
       container
@@ -12,22 +27,10 @@ const Home = () => {
       justifyContent="center"
       style={{ width: "80vw", marginLeft: "20vw" }}
     >
-      <Button
-        variant="contained"
-        onClick={async () => {
-          const result = await login("test", "pass");
-          console.log(result);
-        }}
-      >
-        Login
-      </Button>
-
-      <p>{userId}</p>
-      <p>{pw}</p>
-      <p>{name}</p>
-      <p>{profilePic}</p>
-      <p>{url}</p>
-      <p>{introduction}</p>
+      {articleList &&
+        articleList.map((article) => (
+          <Article article={article} userId={userId}/>
+        ))}
     </Grid>
   );
 };

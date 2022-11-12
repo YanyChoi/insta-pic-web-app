@@ -1,6 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../api/user/login";
 import { UserContext } from "../../context/context";
 import LogoTypo from "../../media/logo_typo.png";
@@ -13,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onKeyPress = async (event) => {
-    if (event.key == "Enter") {
+    if (event.key === "Enter") {
       await onClick();
     }
   };
@@ -48,6 +48,7 @@ const Login = () => {
     >
       <img
         src={LogoTypo}
+        alt="logo"
         style={{ width: "252px", height: "80px", margin: "55px 47px 0px 47px" }}
       />
       <Grid
@@ -84,6 +85,7 @@ const Login = () => {
         />
         <div style={{ height: "30px" }} />
         <Button
+          disabled={!isValid}
           variant="contained"
           onClick={onClick}
           style={{ height: "40px", width: "290px" }}
@@ -94,9 +96,9 @@ const Login = () => {
       <Grid container justifyContent="center">
         <p style={{ fontSize: "10pt" }}>
           계정이 없으시다면?{" "}
-          <a href="" style={{ textDecoration: "none" }}>
+          <Link to="/signup" style={{ textDecoration: "none" }}>
             회원가입
-          </a>
+          </Link>
         </p>
       </Grid>
     </Grid>

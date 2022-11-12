@@ -4,24 +4,27 @@ import { API } from "../../utils/prefix";
 export const signUp = async ({
   introduction,
   name,
-  profilePic,
+  profilePicFile,
   pw,
   url,
-  userId,
+  id,
 }) => {
   const body = new FormData();
 
-  body.append(
-    "userDraft",
-    `{"introduction": ${introduction},
-    "name": ${name},
-    "pw": ${pw},
-    "url": ${url},
-    "userId": ${userId}}`,
-    { contentType: "application/json" }
-  );
+  const json = {
+    introduction: introduction,
+    name: name,
+    pw: pw,
+    url: url,
+    userId: id,
+  };
 
-  body.append("profilePic", profilePic);
+  const userDraft = new Blob([JSON.stringify(json)], {
+    type: "application/json",
+  });
+  body.append("userDraft", userDraft);
+
+  body.append("profilePic", profilePicFile, profilePicFile.name);
 
   const request = `${API}/user/signup`;
 
