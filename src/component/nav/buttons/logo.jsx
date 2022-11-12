@@ -1,17 +1,16 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import InstagramIcon from "@mui/icons-material/Instagram";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
-
-const PostButton = () => {
+const LogoButton = () => {
   return (
-    <Link to="/post">
+    <Link to="/">
       <Button
         onClick={() => {}}
         style={{ width: 100, height: 70, color: "black" }}
       >
-        <AddCircleOutlineIcon style={{ width: 35, height: 35 }} />
+        <InstagramIcon style={{ width: 35, height: 35 }} />
       </Button>
     </Link>
   );
 };
-export default PostButton;
+export default LogoButton;

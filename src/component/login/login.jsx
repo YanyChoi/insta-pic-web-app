@@ -1,5 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../api/user/login";
 import LogoTypo from "../../media/logo_typo.png";
 
@@ -8,6 +9,7 @@ const Login = () => {
   const [pw, setPw] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [userInfo, setUserInfo] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id.length > 0 && setPw > 0) {
@@ -68,6 +70,9 @@ const Login = () => {
           onClick={() => {
             const newUser = login(id, pw);
             setUserInfo(newUser);
+            if (newUser) {
+              navigate("/");
+            }
           }}
           style={{ height: "40px", width: "290px" }}
         >
@@ -75,7 +80,12 @@ const Login = () => {
         </Button>
       </Grid>
       <Grid container justifyContent="center">
-        <p style={{ fontSize: '10pt'}}>계정이 없으시다면? <a href="" style={{textDecoration: 'none'}}>회원가입</a></p>
+        <p style={{ fontSize: "10pt" }}>
+          계정이 없으시다면?{" "}
+          <a href="" style={{ textDecoration: "none" }}>
+            회원가입
+          </a>
+        </p>
       </Grid>
     </Grid>
   );
