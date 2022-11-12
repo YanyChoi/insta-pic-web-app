@@ -1,13 +1,11 @@
 import { Grid } from "@mui/material";
-import Home from "./home/home";
 import Nav from "./nav/nav";
 
-const Wrap = () => {
-  const Pages = [<Home />];
+const Wrap = ({ children }) => {
   return (
     <Grid container direction="row" justifyContent="flex-start">
       <Nav />
-      {Pages[0]}
+      {children}
     </Grid>
   );
 };

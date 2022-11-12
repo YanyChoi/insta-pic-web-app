@@ -1,8 +1,10 @@
-import { Axios } from "axios";
+import Axios from "axios";
 import { API } from "../../utils/prefix";
+import { getUserInfo, storeUserInfo } from "../../utils/user-info-manage";
 
 export const login = async (id, pw) => {
   const request = `${API}/user/login?id=${id}&pw=${pw}`;
   const response = await Axios.get(request);
-  return response;
+  storeUserInfo(response.data);
+  return response.data;
 };
