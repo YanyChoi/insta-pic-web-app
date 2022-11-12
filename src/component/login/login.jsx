@@ -1,15 +1,31 @@
 import { Button, Grid, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/user/login";
+import { UserContext } from "../../context/context";
 import LogoTypo from "../../media/logo_typo.png";
 
 const Login = () => {
+  const { updateInfo } = useContext(UserContext);
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const [isValid, setIsValid] = useState(false);
-  const [userInfo, setUserInfo] = useState();
   const navigate = useNavigate();
+
+  const onKeyPress = async (event) => {
+    if (event.key == "Enter") {
+      await onClick();
+    }
+  };
+
+  const onClick = async (e) => {
+    const newUser = await login(id, pw);
+    console.log(newUser);
+    await updateInfo(newUser);
+    if (newUser) {
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
     if (id.length > 0 && setPw > 0) {
@@ -49,6 +65,7 @@ const Login = () => {
           id="id_input"
           variant="outlined"
           value={id}
+          onKeyPress={onKeyPress}
           onChange={(e) => {
             setId(e.target.value);
           }}
@@ -60,6 +77,7 @@ const Login = () => {
           variant="outlined"
           type="password"
           value={pw}
+          onKeyPress={onKeyPress}
           onChange={(e) => {
             setPw(e.target.value);
           }}
@@ -67,13 +85,7 @@ const Login = () => {
         <div style={{ height: "30px" }} />
         <Button
           variant="contained"
-          onClick={() => {
-            const newUser = login(id, pw);
-            setUserInfo(newUser);
-            if (newUser) {
-              navigate("/");
-            }
-          }}
+          onClick={onClick}
           style={{ height: "40px", width: "290px" }}
         >
           로그인

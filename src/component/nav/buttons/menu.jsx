@@ -1,9 +1,12 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import { Button, Popover, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../../context/context";
 import { logout } from "../../../utils/user-info-manage";
 const MenuButton = () => {
+  const { updateInfo } = useContext(UserContext);
+
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -42,6 +45,14 @@ const MenuButton = () => {
             style={{ width: "150px", height: "50px" }}
             onClick={() => {
               logout();
+              updateInfo({
+                userId: "",
+                pw: "",
+                name: "",
+                profilePic: "",
+                url: "",
+                introduction: "",
+              });
             }}
           >
             로그아웃
