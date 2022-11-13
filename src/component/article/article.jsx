@@ -1,28 +1,34 @@
 import { Button, Grid, TextField } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getUser } from "../../api/user/get-user";
 import { getFollowing } from "../../api/follow/get-follow";
 import { getMedia } from "../../api/media/get-media";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getArticleLike } from "../../api/like/get-like";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { postFollow } from "../../api/follow/post-follow";
 import { postArticleLike } from "../../api/like/post-like";
 import { deleteArticleLike } from "../../api/like/delete-like";
-import ArticleModal from "../modal/article";
 import { postRootComment } from "../../api/comment/post-comment";
+import { UserContext } from "../../context/context";
 
 const Article = ({ article, userId }) => {
-  const [author, setAuthor] = useState();
+  const {
+    setArticleOpen,
+    setArticle,
+    setUserList,
+    setListOpen,
+    setListType,
+    setArticleAuthor,
+  } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [media, setMedia] = useState([]);
   const [likes, setLikes] = useState();
   const [liked, setLiked] = useState(false);
-  const [articleOpen, setArticleOpen] = useState(false);
   const [commentDraft, setCommentDraft] = useState("");
-
+  const [author, setAuthor] = useState("");
+  const navigate = useNavigate();
   const getUserInfo = async (userId) => {
     const data = await getUser(userId);
     setAuthor(data);
@@ -48,13 +54,18 @@ const Article = ({ article, userId }) => {
   const checkLike = async (articleId) => {
     const data = await getArticleLike(articleId);
     setLikes(data);
-    console.log(data);
     for (let i = 0; i < data.count; i++) {
       if (data.articleLikeList[i].userId === userId) {
         setLiked(true);
       }
     }
   };
+
+  const openProfile = (profileId) => {
+    navigate(`/profile?id=${profileId}`);
+    window.location.reload();
+  };
+
   useEffect(() => {
     getUserInfo(article.userId);
     getArticleMedia(article.articleId);
@@ -96,7 +107,7 @@ const Article = ({ article, userId }) => {
               height: "58px",
             }}
           >
-            <Link
+            {/* <Link
               to={`/profile?id=${author?.userId}`}
               style={{
                 color: "black",
@@ -104,23 +115,36 @@ const Article = ({ article, userId }) => {
                 width: "300px",
                 textDecoration: "none",
               }}
-            >
-              <Grid direction="row" container>
-                <img
-                  alt="author"
-                  src={author?.profilePic}
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    margin: "10px 10px 0px 0px",
-                  }}
-                />
-                <p style={{ marginRight: "10px", marginTop: "20px" }}>
-                  <b>{article.userId}</b>
-                </p>
-              </Grid>
-            </Link>
+            > */}
+            <Grid direction="row" container>
+              <img
+                alt="author"
+                src={author?.profilePic}
+                onClick={() => {
+                  openProfile(article.userId);
+                }}
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  margin: "10px 10px 0px 0px",
+                  cursor: "pointer",
+                }}
+              />
+              <p
+                onClick={() => {
+                  openProfile(article.userId);
+                }}
+                style={{
+                  marginRight: "10px",
+                  marginTop: "20px",
+                  cursor: "pointer",
+                }}
+              >
+                <b>{article.userId}</b>
+              </p>
+            </Grid>
+            {/* </Link> */}
             {!isFollowing && (
               <Button
                 style={{
@@ -220,6 +244,11 @@ const Article = ({ article, userId }) => {
               color: "black",
               marginBottom: "10px",
             }}
+            onClick={() => {
+              setUserList(likes.articleLikeList);
+              setListType("likes");
+              setListOpen(true);
+            }}
           >
             <b>좋아요 {likes?.count ?? 0}개</b>
           </Button>
@@ -240,6 +269,9 @@ const Article = ({ article, userId }) => {
           </p>
           <a
             onClick={() => {
+              setArticleAuthor(author);
+              setListType("article");
+              setArticle(article);
               setArticleOpen(true);
             }}
             style={{ textDecoration: "none", color: "darkgray" }}
@@ -301,12 +333,6 @@ const Article = ({ article, userId }) => {
           </Button>
         </Grid>
       </div>
-      <ArticleModal
-        articleOpen={articleOpen}
-        setArticleOpen={setArticleOpen}
-        article={article}
-        author={author}
-      />
     </>
   );
 };

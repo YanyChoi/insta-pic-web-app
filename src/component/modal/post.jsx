@@ -5,8 +5,8 @@ import { getFollowing } from "../../api/follow/get-follow";
 import { postMedia } from "../../api/media/post-media";
 import { UserContext } from "../../context/context";
 
-const PostModal = ({ isOpen, setIsOpen }) => {
-  const { userId } = useContext(UserContext);
+const PostModal = () => {
+  const { userId, postOpen, setPostOpen } = useContext(UserContext);
   const [step, setStep] = useState(0);
   const [mediaList, setMediaList] = useState([]);
   const [canMove, setCanMove] = useState(false);
@@ -35,7 +35,7 @@ const PostModal = ({ isOpen, setIsOpen }) => {
   const onSubmit = async () => {
     const postedArticle = await postArticle({ location, text, userId });
     mediaList.forEach(async (media, index) => {
-      const postedMedia = await postMedia(
+      await postMedia(
         media,
         mediaMentions[index],
         postedArticle.articleId
@@ -50,9 +50,9 @@ const PostModal = ({ isOpen, setIsOpen }) => {
 
   return (
     <Modal
-      open={isOpen}
+      open={postOpen}
       onClose={() => {
-        setIsOpen(false);
+        setPostOpen(false);
       }}
     >
       <Paper
@@ -78,10 +78,10 @@ const PostModal = ({ isOpen, setIsOpen }) => {
               disabled={!canMove}
               variant="text"
               onClick={() => {
-                if (step == 2) {
+                if (step === 2) {
                   onSubmit();
                   setStep(0);
-                  setIsOpen(false);
+                  setPostOpen(false);
                 } else {
                   setStep(step + 1);
                 }
@@ -118,7 +118,6 @@ const FileSubmit = ({ mediaList, setMediaList, setCanMove }) => {
           for (let i = 0; i < e.target.files.length; i++) {
             list.push(e.target.files[i]);
           }
-          console.log(list);
           setMediaList(list);
           if (e.target.files[0]) {
             setCanMove(true);
@@ -134,7 +133,7 @@ const FileSubmit = ({ mediaList, setMediaList, setCanMove }) => {
           return (
             <img
               src={url}
-              alt="image"
+              alt="imagemedia"
               key={url}
               style={{
                 width: "200px",
@@ -172,7 +171,7 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
           <Grid container direction="column">
             <img
               src={url}
-              alt="image"
+              alt="media"
               key={url}
               style={{
                 width: "200px",
@@ -204,29 +203,24 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
                       <Button
                         onClick={() => {
                           const mentions = mediaMentions[mediaIndex];
-                          console.log(mentions.includes(follower.followId));
                           if (mentions.includes(follower.followId)) {
-                            console.log("splice");
                             mentions.splice(
                               mentions.indexOf(follower.followId)
                             );
                           } else {
-                            console.log("asdf");
                             mentions.push(follower.followId);
                           }
-                          console.log(mentions);
                           setMediaMentions([
                             ...mediaMentions.slice(0, mediaIndex),
                             mentions,
                             ...mediaMentions.slice(mediaIndex + 1),
                           ]);
-                          console.log(mediaMentions);
                         }}
                       >
                         <img
                           src={follower.profilePic}
                           key={index}
-                          // alt="follower"
+                          alt="follower"
                           style={{
                             width: "24px",
                             height: "24px",

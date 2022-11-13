@@ -7,14 +7,16 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { deleteCommentLike } from "../../../api/like/delete-like";
 import { postCommentLike } from "../../../api/like/post-like";
 import { postRootComment } from "../../../api/comment/post-comment";
+import { useNavigate } from "react-router-dom";
 
-const Comment = ({ comment, isNested }) => {
-  const { userId } = useContext(UserContext);
+const Comment = ({ comment }) => {
+  const { userId, setListOpen, setUserList, setListType, setArticleOpen } =
+    useContext(UserContext);
   const [openReply, setOpenReply] = useState(false);
   const [liked, setLiked] = useState(false);
   const [reply, setReply] = useState("");
   const [commentLikes, setCommentLikes] = useState();
-
+  const navigate = useNavigate();
   const getCommentLikes = async (commentId) => {
     const data = await getCommentLike(commentId);
     setCommentLikes(data.commentLikeList);
@@ -30,7 +32,7 @@ const Comment = ({ comment, isNested }) => {
         setLiked(true);
       }
     }
-  }, [commentLikes]);
+  }, [commentLikes, userId]);
 
   return (
     <>
@@ -50,6 +52,7 @@ const Comment = ({ comment, isNested }) => {
             }}
           >
             <img
+              alt="profile"
               src={comment?.profilePic}
               style={{
                 marginTop: "5px",
@@ -63,12 +66,22 @@ const Comment = ({ comment, isNested }) => {
               direction="column"
               style={{ width: "calc(30vw - 130px)" }}
             >
-              <Grid container direction="row">
+              <Grid
+                container
+                direction="row"
+                style={{ textDecoration: "none", color: "black" }}
+              >
                 <b
                   style={{
                     fontSize: "14px",
                     marginLeft: "14px",
                     marginTop: "7px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setArticleOpen(false);
+                    navigate(`/profile?id=${comment?.userId}`);
+                    window.location.reload();
                   }}
                 >
                   {comment?.userId}
@@ -99,6 +112,11 @@ const Comment = ({ comment, isNested }) => {
                     fontSize: "12px",
                     height: "14px",
                     color: "gray",
+                  }}
+                  onClick={() => {
+                    setListType("likes");
+                    setUserList(commentLikes);
+                    setListOpen(true);
                   }}
                 >
                   좋아요 {commentLikes?.length ?? 0}개
@@ -199,7 +217,7 @@ const Comment = ({ comment, isNested }) => {
       </Grid>
       <div style={{ marginLeft: 40 }}>
         {comment?.childComments.map((childComment) => (
-          <Comment comment={childComment} isNested={true} />
+          <Comment comment={childComment} />
         ))}
       </div>
     </>

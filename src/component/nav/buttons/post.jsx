@@ -1,21 +1,22 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../../../context/context";
 import PostModal from "../../modal/post";
 
 const PostButton = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { setPostOpen } = useContext(UserContext);
   return (
     <>
       <Button
         onClick={() => {
-          setIsOpen(true);
+          setPostOpen(true);
         }}
         style={{ width: 100, height: 70, color: "black" }}
       >
         <AddCircleOutlineIcon style={{ width: 35, height: 35 }} />
       </Button>
-      <PostModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <PostModal />
     </>
   );
 };

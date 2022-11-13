@@ -12,7 +12,16 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Comment from "./article/comment";
 import { postRootComment } from "../../api/comment/post-comment";
 
-const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
+const ArticleModal = () => {
+  const {
+    articleOpen,
+    setArticleOpen,
+    setListOpen,
+    setUserList,
+    setListType,
+    article,
+    articleAuthor,
+  } = useContext(UserContext);
   const { userId } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaList, setMediaList] = useState([]);
@@ -23,7 +32,6 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
   const getArticleMedia = async (articleId) => {
     const data = await getMedia(articleId);
     setMediaList(data.media);
-    console.log(data.media);
   };
 
   const getArticleComments = async (articleId) => {
@@ -34,7 +42,6 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
   const checkLike = async (articleId) => {
     const data = await getArticleLike(articleId);
     setLikes(data);
-    console.log(data);
     for (let i = 0; i < data.count; i++) {
       if (data.articleLikeList[i].userId === userId) {
         setLiked(true);
@@ -123,7 +130,8 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
               }}
             >
               <img
-                src={author?.profilePic}
+                alt="profile"
+                src={articleAuthor?.profilePic}
                 style={{ width: "32px", height: "32px", borderRadius: "50%" }}
               />
               <b
@@ -133,7 +141,7 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
                   marginTop: "7px",
                 }}
               >
-                {author?.userId}
+                {articleAuthor?.userId}
               </b>
             </Grid>
             <Grid
@@ -149,7 +157,8 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
               <Grid container direction="column" style={{ padding: "16px" }}>
                 <Grid container direction="row">
                   <img
-                    src={author?.profilePic}
+                    alt="profile"
+                    src={articleAuthor?.profilePic}
                     style={{
                       width: "32px",
                       height: "32px",
@@ -163,7 +172,7 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
                       marginTop: "7px",
                     }}
                   >
-                    {author?.userId}
+                    {articleAuthor?.userId}
                   </b>
                 </Grid>
                 <p>{article?.text}</p>
@@ -219,6 +228,11 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
                   height: "24px",
                   color: "black",
                   marginBottom: "10px",
+                }}
+                onClick={() => {
+                  setUserList(likes.articleLikeList);
+                  setListType("likes");
+                  setListOpen(true);
                 }}
               >
                 <b>좋아요 {likes?.count ?? 0}개</b>

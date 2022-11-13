@@ -17,6 +17,13 @@ const UserContextProvider = ({ children }) => {
   const [profileId, setProfileId] = useState(
     queryString.parse(window.location.search).id
   );
+  const [listOpen, setListOpen] = useState(false);
+  const [listType, setListType] = useState("");
+  const [articleOpen, setArticleOpen] = useState(false);
+  const [postOpen, setPostOpen] = useState(false);
+  const [userList, setUserList] = useState([]);
+  const [article, setArticle] = useState();
+  const [articleAuthor, setArticleAuthor] = useState();
   const updateInfo = ({ userId, pw, name, profilePic, url, introduction }) => {
     setUserId(userId);
     setPw(pw);
@@ -56,6 +63,20 @@ const UserContextProvider = ({ children }) => {
         setIntroduction,
         updateInfo,
         userInfo,
+        listOpen,
+        setListOpen,
+        listType,
+        setListType,
+        postOpen,
+        setPostOpen,
+        articleOpen,
+        setArticleOpen,
+        userList,
+        setUserList,
+        article,
+        setArticle,
+        articleAuthor,
+        setArticleAuthor,
       }}
     >
       {children}
