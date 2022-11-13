@@ -13,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onKeyPress = async (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && isValid) {
       await onClick();
     }
   };
@@ -28,7 +28,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (id.length > 0 && setPw > 0) {
+    if (!!id && !!pw) {
       setIsValid(true);
     }
   }, [id, pw]);
