@@ -244,7 +244,9 @@ const Article = ({ article, userId }) => {
             }}
             style={{ textDecoration: "none", color: "darkgray" }}
           >
-            <p style={{ margin: "5px 0px 0px 0px" }}>댓글 더보기</p>
+            <p style={{ margin: "5px 0px 0px 0px", cursor: "pointer" }}>
+              댓글 더보기
+            </p>
           </a>
         </Grid>
         <Grid
@@ -273,7 +275,7 @@ const Article = ({ article, userId }) => {
           />
           <Button
             variant="text"
-            onClick={ async () => {
+            onClick={async () => {
               const mentions = [];
               let mention = commentDraft;
               while (mention.includes("@")) {
@@ -282,7 +284,10 @@ const Article = ({ article, userId }) => {
                   mentions.push(mention.slice(0, mention.indexOf(" ")));
                 else mentions.push(mention);
               }
-              const commentText = mention.slice(mention.indexOf(" ") + 1);
+              const commentText =
+                mention !== commentDraft
+                  ? mention.slice(mention.indexOf(" ") + 1)
+                  : commentDraft;
               await postRootComment({
                 articleId: article.articleId,
                 userId,

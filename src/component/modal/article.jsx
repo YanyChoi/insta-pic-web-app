@@ -9,6 +9,8 @@ import { deleteArticleLike } from "../../api/like/delete-like";
 import { postArticleLike } from "../../api/like/post-like";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import Comment from "./article/comment";
+import { postRootComment } from "../../api/comment/post-comment";
 
 const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
   const { userId } = useContext(UserContext);
@@ -17,7 +19,7 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState();
   const [liked, setLiked] = useState(false);
-
+  const [commentDraft, setCommentDraft] = useState("");
   const getArticleMedia = async (articleId) => {
     const data = await getMedia(articleId);
     setMediaList(data.media);
@@ -27,7 +29,6 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
   const getArticleComments = async (articleId) => {
     const data = await getComments(articleId);
     setComments(data.comments);
-    console.log(data);
   };
 
   const checkLike = async (articleId) => {
@@ -43,9 +44,11 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    getArticleMedia(article?.articleId);
-    getArticleComments(article?.articleId);
-    checkLike(article?.articleId);
+    if (article?.articleId) {
+      getArticleMedia(article.articleId);
+      getArticleComments(article.articleId);
+      checkLike(article.articleId);
+    }
     setIsLoading(false);
   }, [article]);
   return (
@@ -164,44 +167,9 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
                   </b>
                 </Grid>
                 <p>{article?.text}</p>
-                {comments.map((comment) => {
-                  return (
-                    <Grid
-                      container
-                      direction="row"
-                      style={{
-                        padding: "12px 0px 0px 0px",
-                      }}
-                    >
-                      <img
-                        src={comment?.profilePic}
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      <b
-                        style={{
-                          fontSize: "14px",
-                          marginLeft: "14px",
-                          marginTop: "7px",
-                        }}
-                      >
-                        {comment?.userId}
-                      </b>
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          marginLeft: "14px",
-                          marginTop: "7px",
-                        }}
-                      >
-                        {comment?.text}
-                      </p>
-                    </Grid>
-                  );
-                })}
+                {comments.map((comment) => (
+                  <Comment comment={comment} />
+                ))}
                 {/* comments */}
               </Grid>
             </Grid>
@@ -268,12 +236,12 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
             >
               <TextField
                 id="reply"
-                placeholder="댓글 입력..."
+                placeholder="댓글 달기..."
                 variant="standard"
                 onChange={(e) => {
-                  //   setCommentDraft(e.target.value);
+                  setCommentDraft(e.target.value);
                 }}
-                // value={commentDraft}
+                value={commentDraft}
                 style={{
                   margin: "0px",
                   width: "calc(30vw - 95px)",
@@ -283,22 +251,25 @@ const ArticleModal = ({ articleOpen, setArticleOpen, article, author }) => {
               <Button
                 variant="text"
                 onClick={async () => {
-                  //   const mentions = [];
-                  //   let mention = commentDraft;
-                  //   while (mention.includes("@")) {
-                  //     mention = mention.slice(mention.indexOf("@") + 1);
-                  //     if (mention.indexOf(" ") !== -1)
-                  //       mentions.push(mention.slice(0, mention.indexOf(" ")));
-                  //     else mentions.push(mention);
-                  //   }
-                  //   const commentText = mention.slice(mention.indexOf(" ") + 1);
-                  //   await postRootComment({
-                  //     articleId: article.articleId,
-                  //     userId,
-                  //     mentionedId: mentions[0],
-                  //     text: commentText,
-                  //   });
-                  //   setCommentDraft("");
+                  const mentions = [];
+                  let mention = commentDraft;
+                  while (mention.includes("@")) {
+                    mention = mention.slice(mention.indexOf("@") + 1);
+                    if (mention.indexOf(" ") !== -1)
+                      mentions.push(mention.slice(0, mention.indexOf(" ")));
+                    else mentions.push(mention);
+                  }
+                  const commentText =
+                    mention !== commentDraft
+                      ? mention.slice(mention.indexOf(" ") + 1)
+                      : commentDraft;
+                  await postRootComment({
+                    articleId: article.articleId,
+                    userId,
+                    mentionedId: mentions[0],
+                    text: commentText,
+                  });
+                  setCommentDraft("");
                 }}
               >
                 게시
