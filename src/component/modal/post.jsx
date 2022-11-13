@@ -1,13 +1,18 @@
-import { Button, Grid, Modal, Paper } from "@mui/material";
+import { Button, Grid, Modal, Paper, TextField } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import { postArticle } from "../../api/article/post-article";
 import { getFollowing } from "../../api/follow/get-follow";
+import { postMedia } from "../../api/media/post-media";
 import { UserContext } from "../../context/context";
 
 const PostModal = ({ isOpen, setIsOpen }) => {
+  const { userId } = useContext(UserContext);
   const [step, setStep] = useState(0);
   const [mediaList, setMediaList] = useState([]);
   const [canMove, setCanMove] = useState(false);
   const [mediaMentions, setMediaMentions] = useState([]);
+  const [location, setLocation] = useState("");
+  const [text, setText] = useState("");
   const Steps = [
     <FileSubmit
       mediaList={mediaList}
@@ -19,7 +24,30 @@ const PostModal = ({ isOpen, setIsOpen }) => {
       mediaMentions={mediaMentions}
       setMediaMentions={setMediaMentions}
     />,
+    <WriteDetails
+      location={location}
+      setLocation={setLocation}
+      text={text}
+      setText={setText}
+    />,
   ];
+
+  const onSubmit = async () => {
+    const postedArticle = await postArticle({ location, text, userId });
+    mediaList.forEach(async (media, index) => {
+      const postedMedia = await postMedia(
+        media,
+        mediaMentions[index],
+        postedArticle.articleId
+      );
+    });
+    setMediaList([]);
+    setCanMove(false);
+    setMediaMentions([]);
+    setLocation("");
+    setText("");
+  };
+
   return (
     <Modal
       open={isOpen}
@@ -50,10 +78,16 @@ const PostModal = ({ isOpen, setIsOpen }) => {
               disabled={!canMove}
               variant="text"
               onClick={() => {
-                setStep(step + 1);
+                if (step == 2) {
+                  onSubmit();
+                  setStep(0);
+                  setIsOpen(false);
+                } else {
+                  setStep(step + 1);
+                }
               }}
             >
-              다음
+              {step === 2 ? "제출" : "다음"}
             </Button>
           </Grid>
           {Steps[step]}
@@ -215,6 +249,31 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
           </Grid>
         );
       })}
+    </div>
+  );
+};
+
+const WriteDetails = ({ text, setText, location, setLocation }) => {
+  return (
+    <div style={{}}>
+      <TextField
+        label="장소"
+        value={location}
+        onChange={(e) => {
+          setLocation(e.target.value);
+        }}
+        style={{ width: "300px", margin: "10px" }}
+      />
+      <TextField
+        label="내용"
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+        }}
+        multiline
+        rows={5}
+        style={{ width: "500px", margin: "10px" }}
+      />
     </div>
   );
 };

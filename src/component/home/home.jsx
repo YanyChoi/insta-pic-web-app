@@ -5,8 +5,7 @@ import { UserContext } from "../../context/context";
 import Article from "../article/article";
 
 const Home = () => {
-  const { userId } =
-    useContext(UserContext);
+  const { userId } = useContext(UserContext);
 
   const [articleList, setArticleList] = useState([]);
 
@@ -29,7 +28,7 @@ const Home = () => {
     >
       {articleList &&
         articleList.map((article) => (
-          <Article article={article} userId={userId}/>
+          <Article article={article} userId={userId} />
         ))}
     </Grid>
   );

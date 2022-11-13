@@ -162,8 +162,10 @@ const Article = ({ article, userId }) => {
           borderBottom: "1px solid lightgray",
         }}
       >
-        <p style={{ margin: '0' }}><b>{article.userId}</b> {article.text}</p>
-        <p style={{ margin: '5px 0px 0px 0px' }}>댓글 더보기</p>
+        <p style={{ margin: "0" }}>
+          <b>{article.userId}</b> {article.text}
+        </p>
+        <p style={{ margin: "5px 0px 0px 0px" }}>댓글 더보기</p>
       </Grid>
       <Grid
         container

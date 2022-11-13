@@ -5,7 +5,7 @@ import { signUp } from "../../api/user/sign-up";
 import { UserContext } from "../../context/context";
 
 const SignUp = () => {
-    const {updateInfo} = useContext(UserContext);
+  const { updateInfo } = useContext(UserContext);
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const [name, setName] = useState("");
