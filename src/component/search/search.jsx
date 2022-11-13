@@ -1,5 +1,5 @@
 import { Button, Grid, InputBase } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { searchUser } from "../../api/user/get-user";
 
@@ -11,6 +11,10 @@ const Search = () => {
     const data = await searchUser(keyword);
     setSearchResult(data.users);
   };
+
+  useEffect(() => {
+    search();
+  });
 
   return (
     <Grid
@@ -90,6 +94,8 @@ const Search = () => {
                 >
                   <img
                     src={user.profilePic}
+                    key={user.profilePic}
+                    alt="profile"
                     style={{
                       width: "44px",
                       height: "44px",

@@ -1,5 +1,4 @@
 import { Button, Grid } from "@mui/material";
-import queryString from "query-string";
 import { useContext, useEffect, useState } from "react";
 import { getArticleListByUser } from "../../api/article/get-article";
 import { deleteFollow } from "../../api/follow/delete-follow";
@@ -12,22 +11,26 @@ import { postFollow } from "../../api/follow/post-follow";
 import { getUser } from "../../api/user/get-user";
 import { UserContext } from "../../context/context";
 import ArticleModal from "../modal/article";
-const Profile = () => {
-  const { userId } = useContext(UserContext);
-  const [profileId, setProfileId] = useState(
-    queryString.parse(window.location.search).id
-  );
+import UserListModal from "../modal/userlist";
+const Profile = (props) => {
+  const {
+    userId,
+    setArticleOpen,
+    setArticle,
+    setListOpen,
+    setListType,
+    setUserList,
+    setArticleAuthor,
+    profileId,
+  } = useContext(UserContext);
   const [profileInfo, setProfileInfo] = useState();
   const [articles, setArticles] = useState();
   const [followers, setFollowers] = useState();
   const [following, setFollowing] = useState();
   const [neighbors, setNeighbors] = useState();
   const [userFollows, setUserFollows] = useState(false);
-  const [articleOpen, setArticleOpen] = useState(false);
-  const [openedArticle, setOpenedArticle] = useState();
 
   const initialize = async () => {
-    console.log(profileId);
     const fetchProfile = await getUser(profileId);
     setProfileInfo(fetchProfile);
     const fetchArticle = await getArticleListByUser(profileId);
@@ -47,12 +50,13 @@ const Profile = () => {
       }
     }
 
-    console.log(fetchFollowers);
   };
 
   useEffect(() => {
     initialize();
   }, []);
+
+  useEffect(() => {});
 
   return (
     <>
@@ -72,6 +76,7 @@ const Profile = () => {
           }}
         >
           <img
+            alt="profile"
             src={profileInfo?.profilePic}
             style={{
               width: "150px",
@@ -92,11 +97,10 @@ const Profile = () => {
                   variant="contained"
                   style={{ height: "30px", margin: "30px 0px 5px 20px" }}
                   onClick={async () => {
-                    const res = userFollows
+                    userFollows
                       ? await deleteFollow(userId, profileId)
                       : await postFollow(userId, profileId);
                     setUserFollows(!userFollows);
-                    console.log(res);
                   }}
                 >
                   {userFollows ? "언팔로우" : "팔로우"}
@@ -106,9 +110,27 @@ const Profile = () => {
             <Grid container direction="row">
               <b>게시물 {articles?.count}</b>
               <div style={{ width: "30px" }}></div>
-              <b>팔로워 {followers?.count}</b>
+              <b
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setUserList(followers.followList);
+                  setListType("followers");
+                  setListOpen(true);
+                }}
+              >
+                팔로워 {followers?.count}
+              </b>
               <div style={{ width: "30px" }}></div>
-              <b>팔로우 {following?.count}</b>
+              <b
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setUserList(following.followList);
+                  setListType("following");
+                  setListOpen(true);
+                }}
+              >
+                팔로우 {following?.count}
+              </b>
             </Grid>
             <h2>{profileInfo?.name}</h2>
             <p style={{ margin: "0" }}>{profileInfo?.introduction}</p>
@@ -119,7 +141,8 @@ const Profile = () => {
             return (
               <Button
                 onClick={() => {
-                  setOpenedArticle(article);
+                  setArticleAuthor(profileInfo);
+                  setArticle(article);
                   setArticleOpen(true);
                 }}
                 style={{ width: "300px", height: "300px", margin: "5px" }}
@@ -139,12 +162,8 @@ const Profile = () => {
           })}
         </div>
       </Grid>
-      <ArticleModal
-        articleOpen={articleOpen}
-        setArticleOpen={setArticleOpen}
-        article={openedArticle}
-        author={profileInfo}
-      />
+      <ArticleModal />
+      <UserListModal />
     </>
   );
 };

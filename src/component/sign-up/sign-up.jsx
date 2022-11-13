@@ -139,7 +139,6 @@ const SignUp = () => {
         <Button
           variant="contained"
           onClick={async () => {
-            console.log(profilePicFile);
             const userInfo = await signUp({
               introduction,
               name,

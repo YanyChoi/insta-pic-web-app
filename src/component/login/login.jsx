@@ -20,7 +20,6 @@ const Login = () => {
 
   const onClick = async (e) => {
     const newUser = await login(id, pw);
-    console.log(newUser);
     await updateInfo(newUser);
     if (newUser) {
       navigate("/");
