@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import queryString from "query-string";
 
 export const UserContext = createContext();
 
@@ -12,6 +13,9 @@ const UserContextProvider = ({ children }) => {
   const [url, setUrl] = useState(localStorage.getItem("url"));
   const [introduction, setIntroduction] = useState(
     localStorage.getItem("introduction")
+  );
+  const [profileId, setProfileId] = useState(
+    queryString.parse(window.location.search).id
   );
   const updateInfo = ({ userId, pw, name, profilePic, url, introduction }) => {
     setUserId(userId);
@@ -42,6 +46,8 @@ const UserContextProvider = ({ children }) => {
         profilePic,
         url,
         introduction,
+        profileId,
+        setProfileId,
         setUserId,
         setPw,
         setName,

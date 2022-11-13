@@ -6,12 +6,12 @@ export const postRootComment = async ({
   userId,
   mentionedId,
   text,
-  parentCommentId = 0,
+  parentCommentId = null,
 }) => {
   const request = `${API}/comment`;
-
+  let body;
   if (mentionedId) {
-    const body = {
+    body = {
       articleId: articleId,
       mentionedId: mentionedId,
       parentCommentId: parentCommentId,
@@ -19,7 +19,7 @@ export const postRootComment = async ({
       text: text,
     };
   } else {
-    const body = {
+    body = {
       articleId: articleId,
       parentCommentId: parentCommentId,
       userId: userId,
