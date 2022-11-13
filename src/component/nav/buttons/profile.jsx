@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../../../context/context";
 
 const ProfileButton = () => {
-  const { profilePic } = useContext(UserContext);
+  const { userId, profilePic } = useContext(UserContext);
   return (
-    <Link to="/profile">
+    <Link to={`/profile?id=${userId}`}>
       <Button
         onClick={() => {}}
         style={{ width: 100, height: 70, color: "black" }}
