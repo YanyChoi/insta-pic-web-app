@@ -11,7 +11,7 @@ export const getFeedArticlesByUser = async (feedUserId) => {
   const request = `${API}/article/list?feedUserId=${feedUserId}`;
   const response = await Axios.get(request);
   return response.data;
-}
+};
 
 export const getArticleListByUser = async (userId) => {
   const request = `${API}/article/list?userId=${userId}`;
