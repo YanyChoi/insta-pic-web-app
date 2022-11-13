@@ -1,0 +1,8 @@
+version: 3
+tasks:
+  start:
+    - sudo systemctl start web-app.service
+  stop:
+    - sudo systemctl stop web-app.service
+  status:
+    - sudo systemctl status web-app.service
