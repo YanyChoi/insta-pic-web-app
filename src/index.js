@@ -6,16 +6,29 @@ import Wrap from "./component/wrap";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./component/home/home";
 import Login from "./component/login/login";
+import UserContextProvider from "./context/context";
+import SignUp from "./component/sign-up/sign-up";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route exact path="" element={<Wrap><Home /></Wrap>}></Route>
-        <Route path="login" element={<Login />}></Route>
-      </Routes>
-    </BrowserRouter>
+    <UserContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            exact
+            path=""
+            element={
+              <Wrap>
+                <Home />
+              </Wrap>
+            }
+          ></Route>
+          <Route path="login" element={<Login />}></Route>
+          <Route path="signup" element={<SignUp />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </UserContextProvider>
   </React.StrictMode>
 );
 

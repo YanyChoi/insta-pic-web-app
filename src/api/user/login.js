@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { API } from "../../utils/prefix";
-import { getUserInfo, storeUserInfo } from "../../utils/user-info-manage";
+import { storeUserInfo } from "../../utils/user-info-manage";
 
 export const login = async (id, pw) => {
   const request = `${API}/user/login?id=${id}&pw=${pw}`;
