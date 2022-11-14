@@ -32,6 +32,12 @@ const Login = () => {
     }
   }, [id, pw]);
 
+  useEffect(() => {
+    if (localStorage.length >= 6) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <Grid
       conatiner

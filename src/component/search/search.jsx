@@ -1,12 +1,14 @@
 import { Button, Grid, InputBase } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { searchUser } from "../../api/user/get-user";
+import { UserContext } from "../../context/context";
 
 const Search = () => {
+  const { userId } = useContext(UserContext);
   const [keyword, setKeyword] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-
+  const navigate = useNavigate();
   const search = async () => {
     const data = await searchUser(keyword);
     setSearchResult(data.users);
@@ -15,6 +17,12 @@ const Search = () => {
   useEffect(() => {
     search();
   });
+
+  useEffect(() => {
+    if (localStorage.length < 6) {
+      navigate("/login");
+    }
+  }, [userId]);
 
   return (
     <Grid
@@ -80,36 +88,35 @@ const Search = () => {
                 height: "50px",
               }}
             >
-              <Link
-                to={`/profile?id=${user.userId}`}
-                style={{ textDecoration: "none", color: "black" }}
+              <Grid
+                container
+                direction="row"
+                justifyContent="start"
+                onClick={() => {
+                  navigate(`/profile?id=${user.userId}`);
+                }}
+                style={{
+                  height: "50px",
+                  cursor: "pointer",
+                }}
               >
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="start"
+                <img
+                  src={user.profilePic}
+                  key={user.profilePic}
+                  alt="profile"
                   style={{
-                    height: "50px",
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    marginRight: "10px",
                   }}
-                >
-                  <img
-                    src={user.profilePic}
-                    key={user.profilePic}
-                    alt="profile"
-                    style={{
-                      width: "44px",
-                      height: "44px",
-                      borderRadius: "50%",
-                      marginRight: "10px",
-                    }}
-                  />
-                  <p style={{ marginTop: "3px" }}>
-                    <b>{user?.userId}</b>
-                    <br />
-                    {user?.name}
-                  </p>
-                </Grid>
-              </Link>
+                />
+                <p style={{ marginTop: "3px" }}>
+                  <b>{user?.userId}</b>
+                  <br />
+                  {user?.name}
+                </p>
+              </Grid>
             </Grid>
           );
         })}

@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getFeedArticlesByUser } from "../../api/article/get-article";
 import { UserContext } from "../../context/context";
 import Article from "../article/article";
@@ -10,7 +11,7 @@ const Home = () => {
   const { userId } = useContext(UserContext);
 
   const [articleList, setArticleList] = useState([]);
-
+  const navigate = useNavigate();
   const getArticleList = async (userId) => {
     const articles = await getFeedArticlesByUser(userId);
     setArticleList(articles.articleList);
@@ -18,8 +19,12 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log(localStorage);
+    if (localStorage.length < 6) {
+      navigate("/login");
+    }
     getArticleList(userId);
-  }, []);
+  }, [userId]);
 
   return (
     <>

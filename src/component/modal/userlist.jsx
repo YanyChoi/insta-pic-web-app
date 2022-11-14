@@ -11,8 +11,7 @@ const UserListModal = () => {
   const { listOpen, setListOpen, userList, listType } = useContext(UserContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-  }, [userList]);
+  useEffect(() => {}, [userList]);
   return (
     <Modal
       open={listOpen}
@@ -61,7 +60,11 @@ const UserListModal = () => {
                   onClick={() => {
                     navigate(
                       `/profile?id=${
-                        listType === "likes" ? user.userId : user.followId
+                        listType === "likes"
+                          ? user.userId
+                          : listType === "following"
+                          ? user.followId
+                          : user.userId
                       }`
                     );
                     window.location.reload();
@@ -82,7 +85,13 @@ const UserListModal = () => {
                     }}
                   />
                   <p style={{ marginTop: "10px" }}>
-                    <b>{listType === "likes" ? user.userId : user.followId}</b>
+                    <b>
+                      {listType === "likes"
+                        ? user.userId
+                        : listType === "following"
+                        ? user.followId
+                        : user.userId}
+                    </b>
                   </p>
                 </Grid>
               </Grid>

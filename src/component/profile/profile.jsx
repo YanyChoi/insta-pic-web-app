@@ -42,14 +42,13 @@ const Profile = (props) => {
     if (userId !== profileId) {
       const fetchNeighbors = await getNeighbors(userId, profileId);
       setNeighbors(fetchNeighbors);
-    }
 
-    for (let i = 0; i < fetchFollowers?.followList.length; i++) {
-      if (fetchFollowers.followList[i].userId === userId) {
-        setUserFollows(true);
+      for (let i = 0; i < fetchFollowers?.followList.length; i++) {
+        if (fetchFollowers.followList[i].userId === userId) {
+          setUserFollows(true);
+        }
       }
     }
-
   };
 
   useEffect(() => {

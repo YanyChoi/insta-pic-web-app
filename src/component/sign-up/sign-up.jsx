@@ -1,6 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../api/user/sign-up";
 import { UserContext } from "../../context/context";
 
@@ -22,6 +22,12 @@ const SignUp = () => {
       setProfilePicUrl(URL.createObjectURL(profilePicFile));
     }
   }, [profilePicFile]);
+
+  useEffect(() => {
+    if (localStorage.length >= 6) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <Grid
@@ -106,6 +112,16 @@ const SignUp = () => {
         />
         <div style={{ height: "10px" }} />
         <TextField
+          label="성명"
+          id="name"
+          variant="outlined"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
+        <div style={{ height: "10px" }} />
+        <TextField
           label="자기소개"
           id="introduction"
           variant="outlined"
@@ -124,16 +140,7 @@ const SignUp = () => {
             setUrl(e.target.value);
           }}
         />
-        <div style={{ height: "10px" }} />
-        <TextField
-          label="성명"
-          id="name"
-          variant="outlined"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
+
         <div style={{ height: "10px" }} />
 
         <Button
@@ -156,6 +163,12 @@ const SignUp = () => {
         >
           회원가입
         </Button>
+        <Link
+          to="/login"
+          style={{ textDecoration: "none", textAlign: "center" }}
+        >
+          <p style={{ fontSize: "12px" }}>로그인하기</p>
+        </Link>
       </Grid>
     </Grid>
   );
