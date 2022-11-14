@@ -51,11 +51,13 @@ const Profile = (props) => {
     }
   };
 
+  // useEffect(() => {
+  //   initialize();
+  // }, []);
+
   useEffect(() => {
     initialize();
-  }, []);
-
-  useEffect(() => {});
+  }, [profileId]);
 
   return (
     <>
