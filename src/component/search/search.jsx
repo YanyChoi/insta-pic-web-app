@@ -5,7 +5,7 @@ import { searchUser } from "../../api/user/get-user";
 import { UserContext } from "../../context/context";
 
 const Search = () => {
-  const { userId } = useContext(UserContext);
+  const { userId, setProfileId } = useContext(UserContext);
   const [keyword, setKeyword] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Search = () => {
 
   useEffect(() => {
     search();
-  });
+  }, [keyword]);
 
   useEffect(() => {
     if (localStorage.length < 6) {
@@ -94,6 +94,7 @@ const Search = () => {
                 justifyContent="start"
                 onClick={() => {
                   navigate(`/profile?id=${user.userId}`);
+                  setProfileId(user.userId);
                 }}
                 style={{
                   height: "50px",
