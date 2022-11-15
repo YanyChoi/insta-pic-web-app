@@ -1,4 +1,11 @@
-import { Button, Grid, Modal, Paper, TextField } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Modal,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { getMedia } from "../../api/media/get-media";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -11,6 +18,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Comment from "./article/comment";
 import { postRootComment } from "../../api/comment/post-comment";
+import MentionBox from "../article/mention";
 
 const ArticleModal = () => {
   const {
@@ -23,7 +31,6 @@ const ArticleModal = () => {
     articleAuthor,
     articleLike,
     setArticleLike,
-
   } = useContext(UserContext);
   const { userId } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +39,9 @@ const ArticleModal = () => {
   const [likes, setLikes] = useState();
   const [commentDraft, setCommentDraft] = useState("");
   const [likeChange, setLikeChange] = useState(0);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionList, setMentionList] = useState([]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const getArticleMedia = async (articleId) => {
     const data = await getMedia(articleId);
@@ -75,248 +85,295 @@ const ArticleModal = () => {
     }
   }, [articleOpen]);
 
+  useEffect(() => {
+    if (showMentions) {
+      const e = window.event;
+      setMousePosition({
+        x: e.clientX - e.target.offsetLeft,
+        y: e.clientY - e.target.offsetTop,
+      });
+    }
+  }, [showMentions]);
+
   return (
-    <Modal
-      open={articleOpen}
-      onClose={() => {
-        setArticleOpen(false);
-      }}
-    >
-      <Paper
-        style={{
-          width: "80vw",
-          height: "90vh",
-          position: "absolute",
-          top: "5vh",
-          left: "10vw",
+    <>
+      <Modal
+        open={articleOpen}
+        onClose={() => {
+          setArticleOpen(false);
         }}
       >
-        <Grid container direction="row">
-          <div
-            style={{ width: "50vw", height: "90vh", backgroundColor: "black" }}
-          >
-            {isLoading ? (
-              <>
-                <CircularProgress />
-              </>
-            ) : (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "start",
-                  overflowX: "scroll",
-                  scrollSnapType: "x mandatory !important",
-                  width: `calc(${mediaList.count} * 50vw)`,
-                }}
-              >
-                {mediaList.map((media, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      width: "50vw",
-                      height: "90vh",
-                    }}
-                  >
-                    <img
-                      key={media.mediaId}
-                      alt={media.mediaId}
-                      src={media.url}
+        <Paper
+          style={{
+            width: "80vw",
+            height: "90vh",
+            position: "absolute",
+            top: "5vh",
+            left: "10vw",
+          }}
+        >
+          <Grid container direction="row">
+            <div
+              style={{
+                width: "50vw",
+                height: "90vh",
+                backgroundColor: "black",
+              }}
+            >
+              {isLoading ? (
+                <>
+                  <CircularProgress />
+                </>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "start",
+                    overflowX: "scroll",
+                    scrollSnapType: "x mandatory !important",
+                    width: `calc(${mediaList.count} * 50vw)`,
+                  }}
+                >
+                  {mediaList.map((media, index) => (
+                    <div
+                      key={index}
                       style={{
                         width: "50vw",
                         height: "90vh",
-                        backgroundColor: "black",
-                        objectFit: "contain",
                       }}
-                    ></img>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <Grid
-            container
-            direction="column"
-            style={{ width: "30vw", height: "90vh" }}
-          >
-            <Grid
-              container
-              direction="row"
-              style={{
-                padding: "14px 4px 14px 16px",
-                borderBottom: "1px solid lightgray",
-              }}
-            >
-              <img
-                alt="profile"
-                src={articleAuthor?.profilePic}
-                style={{ width: "32px", height: "32px", borderRadius: "50%" }}
-              />
-              <b
-                style={{
-                  fontSize: "14px",
-                  marginLeft: "14px",
-                  marginTop: "7px",
-                }}
-              >
-                {articleAuthor?.userId}
-              </b>
-            </Grid>
+                      onClick={() => {
+                        setMentionList(media.mentions);
+                        setShowMentions(!showMentions);
+                      }}
+                    >
+                      <img
+                        key={media.mediaId}
+                        alt={media.mediaId}
+                        src={media.url}
+                        style={{
+                          width: "50vw",
+                          height: "90vh",
+                          backgroundColor: "black",
+                          objectFit: "contain",
+                        }}
+                      ></img>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <Grid
               container
               direction="column"
-              style={{
-                width: "30vw",
-                height: "calc(90vh - 200px)",
-                borderBottom: "1px solid lightgray",
-                overflow: "scroll",
-              }}
+              style={{ width: "30vw", height: "90vh" }}
             >
-              <Grid container direction="column" style={{ padding: "16px" }}>
-                <Grid container direction="row">
-                  <img
-                    alt="profile"
-                    src={articleAuthor?.profilePic}
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      borderRadius: "50%",
-                    }}
-                  />
+              <Grid
+                container
+                direction="row"
+                justifyContent="start"
+                style={{
+                  padding: "14px 4px 14px 16px",
+                  borderBottom: "1px solid lightgray",
+                }}
+              >
+                <img
+                  alt="profile"
+                  src={articleAuthor?.profilePic}
+                  style={{ width: "32px", height: "32px", borderRadius: "50%" }}
+                />
+                <Grid
+                  container
+                  direction="column"
+                  style={{ width: "fit-content" }}
+                >
                   <b
                     style={{
                       fontSize: "14px",
                       marginLeft: "14px",
-                      marginTop: "7px",
+                      marginTop: !!article?.location ? "0px" : "7px",
+                      width: "fit-content",
                     }}
                   >
                     {articleAuthor?.userId}
                   </b>
+                  {!!article?.location && (
+                    <Typography
+                      style={{
+                        margin: "0px 0px 0px 14px",
+                        fontSize: "12px",
+                        fontWeight: "lighter",
+                        width: "fit-content",
+                      }}
+                    >
+                      {article.location}
+                    </Typography>
+                  )}
                 </Grid>
-                <p>{article?.text}</p>
-                {comments?.map((comment) => (
-                  <Comment comment={comment} onChange={onChange} />
-                ))}
-                {/* comments */}
+              </Grid>
+              <Grid
+                container
+                direction="column"
+                style={{
+                  width: "30vw",
+                  height: "calc(90vh - 200px)",
+                  borderBottom: "1px solid lightgray",
+                  overflow: "scroll",
+                }}
+              >
+                <Grid container direction="column" style={{ padding: "16px" }}>
+                  <Grid container direction="row">
+                    <img
+                      alt="profile"
+                      src={articleAuthor?.profilePic}
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <b
+                      style={{
+                        fontSize: "14px",
+                        marginLeft: "14px",
+                        marginTop: "7px",
+                      }}
+                    >
+                      {articleAuthor?.userId}
+                    </b>
+                  </Grid>
+                  <p>{article?.text}</p>
+                  {comments?.map((comment) => (
+                    <Comment comment={comment} onChange={onChange} />
+                  ))}
+                  {/* comments */}
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="start"
+                style={{
+                  width: "30vw",
+                  height: "46px",
+                }}
+              >
+                <Button
+                  id="like"
+                  style={{ color: "black" }}
+                  onClick={async () => {
+                    if (articleLike) {
+                      await deleteArticleLike({
+                        articleId: article.articleId,
+                        userId: userId,
+                      });
+                      setLikeChange(likeChange - 1);
+                    } else {
+                      await postArticleLike({
+                        articleId: article.articleId,
+                        userId: userId,
+                      });
+                      setLikeChange(likeChange + 1);
+                    }
+                    setArticleLike(!articleLike);
+                  }}
+                >
+                  {articleLike ? (
+                    <FavoriteIcon style={{ color: "red" }} />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )}
+                </Button>
+                <Button id="comment"></Button>
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                style={{
+                  width: "30vw",
+                  height: "24px",
+                  padding: "0px 10px 0px 10px",
+                }}
+              >
+                <Button
+                  style={{
+                    padding: "0px",
+                    height: "24px",
+                    color: "black",
+                    marginBottom: "10px",
+                  }}
+                  onClick={() => {
+                    setUserList(likes.articleLikeList);
+                    setListType("likes");
+                    setListOpen(true);
+                  }}
+                >
+                  <b>좋아요 {likes?.count + likeChange}개</b>
+                </Button>
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                style={{
+                  width: "30vw",
+                  height: "50px",
+                  padding: "8px 14px 8px 14px",
+                }}
+              >
+                <TextField
+                  id="reply"
+                  placeholder="댓글 달기..."
+                  variant="standard"
+                  onChange={(e) => {
+                    setCommentDraft(e.target.value);
+                  }}
+                  value={commentDraft}
+                  style={{
+                    margin: "0px",
+                    width: "calc(30vw - 95px)",
+                    height: "34px",
+                  }}
+                />
+                <Button
+                  variant="text"
+                  onClick={async () => {
+                    const mentions = [];
+                    let mention = commentDraft;
+                    while (mention.includes("@")) {
+                      mention = mention.slice(mention.indexOf("@") + 1);
+                      if (mention.indexOf(" ") !== -1)
+                        mentions.push(mention.slice(0, mention.indexOf(" ")));
+                      else mentions.push(mention);
+                    }
+                    const commentText =
+                      mention !== commentDraft
+                        ? mention.slice(mention.indexOf(" ") + 1)
+                        : commentDraft;
+                    const data = await postRootComment({
+                      articleId: article.articleId,
+                      userId,
+                      mentionedId: mentions[0],
+                      text: commentText,
+                    });
+                    setComments([...comments, data]);
+                    setCommentDraft("");
+                  }}
+                >
+                  게시
+                </Button>
               </Grid>
             </Grid>
-            <Grid
-              container
-              direction="row"
-              justifyContent="start"
-              style={{
-                width: "30vw",
-                height: "46px",
-              }}
-            >
-              <Button
-                id="like"
-                style={{ color: "black" }}
-                onClick={async () => {
-                  if (articleLike) {
-                    await deleteArticleLike({
-                      articleId: article.articleId,
-                      userId: userId,
-                    });
-                    setLikeChange(likeChange - 1);
-                  } else {
-                    await postArticleLike({
-                      articleId: article.articleId,
-                      userId: userId,
-                    });
-                    setLikeChange(likeChange + 1);
-                  }
-                  setArticleLike(!articleLike);
-                }}
-              >
-                {articleLike ? (
-                  <FavoriteIcon style={{ color: "red" }} />
-                ) : (
-                  <FavoriteBorderIcon />
-                )}
-              </Button>
-              <Button id="comment"></Button>
-            </Grid>
-            <Grid
-              container
-              direction="row"
-              style={{
-                width: "30vw",
-                height: "24px",
-                padding: "0px 10px 0px 10px",
-              }}
-            >
-              <Button
-                style={{
-                  padding: "0px",
-                  height: "24px",
-                  color: "black",
-                  marginBottom: "10px",
-                }}
-                onClick={() => {
-                  setUserList(likes.articleLikeList);
-                  setListType("likes");
-                  setListOpen(true);
-                }}
-              >
-                <b>좋아요 {likes?.count + likeChange}개</b>
-              </Button>
-            </Grid>
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              style={{
-                width: "30vw",
-                height: "50px",
-                padding: "8px 14px 8px 14px",
-              }}
-            >
-              <TextField
-                id="reply"
-                placeholder="댓글 달기..."
-                variant="standard"
-                onChange={(e) => {
-                  setCommentDraft(e.target.value);
-                }}
-                value={commentDraft}
-                style={{
-                  margin: "0px",
-                  width: "calc(30vw - 95px)",
-                  height: "34px",
-                }}
-              />
-              <Button
-                variant="text"
-                onClick={async () => {
-                  const mentions = [];
-                  let mention = commentDraft;
-                  while (mention.includes("@")) {
-                    mention = mention.slice(mention.indexOf("@") + 1);
-                    if (mention.indexOf(" ") !== -1)
-                      mentions.push(mention.slice(0, mention.indexOf(" ")));
-                    else mentions.push(mention);
-                  }
-                  const commentText =
-                    mention !== commentDraft
-                      ? mention.slice(mention.indexOf(" ") + 1)
-                      : commentDraft;
-                  const data = await postRootComment({
-                    articleId: article.articleId,
-                    userId,
-                    mentionedId: mentions[0],
-                    text: commentText,
-                  });
-                  setComments([...comments, data]);
-                  setCommentDraft("");
-                }}
-              >
-                게시
-              </Button>
-            </Grid>
           </Grid>
-        </Grid>
-      </Paper>
-    </Modal>
+          {showMentions && (
+            <MentionBox
+              mentions={mentionList}
+              position={mousePosition}
+              isModal={true}
+            />
+          )}
+        </Paper>
+      </Modal>
+    </>
   );
 };
 

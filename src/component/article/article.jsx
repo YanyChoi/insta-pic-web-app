@@ -1,4 +1,4 @@
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useContext, useEffect, useState } from "react";
 import { getUser } from "../../api/user/get-user";
@@ -25,6 +25,7 @@ const Article = ({ article }) => {
     setArticleAuthor,
     articleLike,
     setArticleLike,
+    setProfileId
   } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [media, setMedia] = useState([]);
@@ -77,7 +78,7 @@ const Article = ({ article }) => {
 
   const openProfile = (profileId) => {
     navigate(`/profile?id=${profileId}`);
-    window.location.reload();
+    setProfileId(profileId);
   };
 
   useEffect(() => {
@@ -96,7 +97,6 @@ const Article = ({ article }) => {
     if (showMentions) {
       const e = window.event;
       setMousePosition({ x: e.clientX, y: e.clientY });
-      console.log(e.clientX, e.clientY);
     }
   }, [showMentions]);
 
@@ -149,18 +149,37 @@ const Article = ({ article }) => {
                   cursor: "pointer",
                 }}
               />
-              <p
-                onClick={() => {
-                  openProfile(article.userId);
-                }}
-                style={{
-                  marginRight: "10px",
-                  marginTop: "20px",
-                  cursor: "pointer",
-                }}
+              <Grid
+                container
+                direction="column"
+                style={{ width: "fit-content" }}
               >
-                <b>{article.userId}</b>
-              </p>
+                <p
+                  onClick={() => {
+                    openProfile(article.userId);
+                  }}
+                  style={{
+                    marginBottom: "0px",
+                    marginRight: "10px",
+                    marginTop: !!article.location ? "10px" : "20px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <b>{article.userId}</b>
+                </p>
+                {!!article.location && (
+                  <Typography
+                    style={{
+                      margin: "0px",
+                      fontSize: "14px",
+                      fontWeight: 'lighter',
+                      width: "fit-content",
+                    }}
+                  >
+                    {article.location}
+                  </Typography>
+                )}
+              </Grid>
             </Grid>
             {!isFollowing && (
               <Button
@@ -196,7 +215,6 @@ const Article = ({ article }) => {
             <div
               key={index}
               onClick={() => {
-                console.log(singleMedia.mentions);
                 setMentionList(singleMedia.mentions);
                 setShowMentions(!showMentions);
               }}
@@ -364,7 +382,9 @@ const Article = ({ article }) => {
         </Grid>
       </div>
 
-      {showMentions && <MentionBox mentions={mentionList} position={mousePosition} />}
+      {showMentions && (
+        <MentionBox mentions={mentionList} position={mousePosition} />
+      )}
     </>
   );
 };

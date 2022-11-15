@@ -31,7 +31,6 @@ const Comment = ({ comment, onChange }) => {
 
   useEffect(() => {
     getCommentLikes(comment?.commentId);
-    console.log(comment);
   }, []);
 
   useEffect(() => {
