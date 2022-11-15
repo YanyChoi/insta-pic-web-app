@@ -5,11 +5,8 @@ export const postMedia = async (files, mentions, articleId) => {
   const body = new FormData();
   body.append("multipartFile", files);
   body.append("articleId", articleId);
-
-  const json = {
-    mentions: mentions,
-  };
-  const mention = new Blob([JSON.stringify(json)], {
+  console.log(JSON.stringify(mentions));
+  const mention = new Blob([JSON.stringify(mentions)], {
     type: "application/json",
   });
   body.append("mentions", mention);

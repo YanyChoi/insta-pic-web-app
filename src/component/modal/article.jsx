@@ -23,6 +23,7 @@ const ArticleModal = () => {
     articleAuthor,
     articleLike,
     setArticleLike,
+
   } = useContext(UserContext);
   const { userId } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);

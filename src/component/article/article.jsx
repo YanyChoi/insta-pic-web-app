@@ -12,6 +12,7 @@ import { postArticleLike } from "../../api/like/post-like";
 import { deleteArticleLike } from "../../api/like/delete-like";
 import { postRootComment } from "../../api/comment/post-comment";
 import { UserContext } from "../../context/context";
+import MentionBox from "./mention";
 
 const Article = ({ article }) => {
   const {
@@ -32,6 +33,9 @@ const Article = ({ article }) => {
   const [commentDraft, setCommentDraft] = useState("");
   const [author, setAuthor] = useState("");
   const [likeChange, setLikeChange] = useState(0);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionList, setMentionList] = useState([]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
   const getUserInfo = async (userId) => {
     const data = await getUser(userId);
@@ -88,6 +92,14 @@ const Article = ({ article }) => {
     setLikeChange(0);
   }, [articleLike]);
 
+  useEffect(() => {
+    if (showMentions) {
+      const e = window.event;
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      console.log(e.clientX, e.clientY);
+    }
+  }, [showMentions]);
+
   return (
     <>
       <div
@@ -122,15 +134,6 @@ const Article = ({ article }) => {
               height: "58px",
             }}
           >
-            {/* <Link
-              to={`/profile?id=${author?.userId}`}
-              style={{
-                color: "black",
-                height: "42px",
-                width: "300px",
-                textDecoration: "none",
-              }}
-            > */}
             <Grid direction="row" container>
               <img
                 alt="author"
@@ -159,7 +162,6 @@ const Article = ({ article }) => {
                 <b>{article.userId}</b>
               </p>
             </Grid>
-            {/* </Link> */}
             {!isFollowing && (
               <Button
                 style={{
@@ -193,6 +195,11 @@ const Article = ({ article }) => {
           {media.map((singleMedia, index) => (
             <div
               key={index}
+              onClick={() => {
+                console.log(singleMedia.mentions);
+                setMentionList(singleMedia.mentions);
+                setShowMentions(!showMentions);
+              }}
               style={{
                 width: "470px",
                 height: "470px",
@@ -356,6 +363,8 @@ const Article = ({ article }) => {
           </Button>
         </Grid>
       </div>
+
+      {showMentions && <MentionBox mentions={mentionList} position={mousePosition} />}
     </>
   );
 };

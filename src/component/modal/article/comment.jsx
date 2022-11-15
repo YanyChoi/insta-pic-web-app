@@ -10,8 +10,14 @@ import { postRootComment } from "../../../api/comment/post-comment";
 import { useNavigate } from "react-router-dom";
 
 const Comment = ({ comment, onChange }) => {
-  const { userId, setListOpen, setUserList, setListType, setArticleOpen } =
-    useContext(UserContext);
+  const {
+    userId,
+    setListOpen,
+    setUserList,
+    setListType,
+    setArticleOpen,
+    setProfileId,
+  } = useContext(UserContext);
   const [openReply, setOpenReply] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeChange, setLikeChange] = useState(0);
@@ -25,6 +31,7 @@ const Comment = ({ comment, onChange }) => {
 
   useEffect(() => {
     getCommentLikes(comment?.commentId);
+    console.log(comment);
   }, []);
 
   useEffect(() => {
@@ -81,21 +88,39 @@ const Comment = ({ comment, onChange }) => {
                   }}
                   onClick={() => {
                     setArticleOpen(false);
+                    setProfileId(comment?.userId);
                     navigate(`/profile?id=${comment?.userId}`);
-                    window.location.reload();
                   }}
                 >
                   {comment?.userId}
                 </b>
-                <p
+                <div
                   style={{
+                    display: "flex",
+                    direction: "row",
                     fontSize: "14px",
-                    marginLeft: "14px",
-                    marginTop: "7px",
+                    marginLeft: "5px",
+                    marginTop: "0px",
                   }}
                 >
-                  {comment?.text}
-                </p>
+                  {!!comment?.mentionedId && (
+                    <p
+                      style={{
+                        color: "gray",
+                        marginTop: "7px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setProfileId(comment?.userId);
+                        navigate(`/profile?id=${comment?.userId}`);
+                        setArticleOpen(false);
+                      }}
+                    >
+                      {`@${comment.mentionedId}`}&nbsp;
+                    </p>
+                  )}
+                  <p style={{ marginTop: "7px" }}>{comment?.text}</p>
+                </div>
               </Grid>
               <Grid container direction="row" style={{ color: "gray" }}>
                 <p
@@ -201,7 +226,6 @@ const Comment = ({ comment, onChange }) => {
                   mention !== reply
                     ? mention.slice(mention.indexOf(" ") + 1)
                     : reply;
-
                 const data = await postRootComment({
                   articleId: comment.articleId,
                   userId: userId,
