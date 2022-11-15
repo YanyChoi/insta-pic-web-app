@@ -13,14 +13,17 @@ import { deleteArticleLike } from "../../api/like/delete-like";
 import { postRootComment } from "../../api/comment/post-comment";
 import { UserContext } from "../../context/context";
 
-const Article = ({ article, userId }) => {
+const Article = ({ article }) => {
   const {
+    userId,
     setArticleOpen,
     setArticle,
     setUserList,
     setListOpen,
     setListType,
     setArticleAuthor,
+    articleLike,
+    setArticleLike,
   } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [media, setMedia] = useState([]);
@@ -28,6 +31,7 @@ const Article = ({ article, userId }) => {
   const [liked, setLiked] = useState(false);
   const [commentDraft, setCommentDraft] = useState("");
   const [author, setAuthor] = useState("");
+  const [likeChange, setLikeChange] = useState(0);
   const navigate = useNavigate();
   const getUserInfo = async (userId) => {
     const data = await getUser(userId);
@@ -41,6 +45,10 @@ const Article = ({ article, userId }) => {
 
   const checkFollow = async () => {
     const result = await getFollowing(userId);
+    if (result.followList[0].userId === userId) {
+      setIsFollowing(true);
+      return true;
+    }
     for (let i = 0; i < result.count; i++) {
       if (result.followList[i].followId === article.userId) {
         setIsFollowing(true);
@@ -57,8 +65,10 @@ const Article = ({ article, userId }) => {
     for (let i = 0; i < data.count; i++) {
       if (data.articleLikeList[i].userId === userId) {
         setLiked(true);
+        return;
       }
     }
+    setLiked(false);
   };
 
   const openProfile = (profileId) => {
@@ -72,6 +82,11 @@ const Article = ({ article, userId }) => {
     checkFollow();
     checkLike(article.articleId);
   }, []);
+
+  useEffect(() => {
+    checkLike(article.articleId);
+    setLikeChange(0);
+  }, [articleLike]);
 
   return (
     <>
@@ -215,16 +230,22 @@ const Article = ({ article, userId }) => {
                   articleId: article.articleId,
                   userId: userId,
                 });
+                setLikeChange(likeChange - 1);
               } else {
                 await postArticleLike({
                   articleId: article.articleId,
                   userId: userId,
                 });
+                setLikeChange(likeChange + 1);
               }
               setLiked(!liked);
             }}
           >
-            {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            {liked ? (
+              <FavoriteIcon style={{ color: "red" }} />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
           </Button>
           <Button id="comment"></Button>
         </Grid>
@@ -244,13 +265,14 @@ const Article = ({ article, userId }) => {
               color: "black",
               marginBottom: "10px",
             }}
-            onClick={() => {
-              setUserList(likes.articleLikeList);
+            onClick={async () => {
+              const data = await getArticleLike(article.articleId);
+              setUserList(data.articleLikeList);
               setListType("likes");
               setListOpen(true);
             }}
           >
-            <b>좋아요 {likes?.count ?? 0}개</b>
+            <b>좋아요 {likes?.count + likeChange}개</b>
           </Button>
         </Grid>
         <Grid
@@ -272,6 +294,7 @@ const Article = ({ article, userId }) => {
               setArticleAuthor(author);
               setListType("article");
               setArticle(article);
+              setArticleLike(liked);
               setArticleOpen(true);
             }}
             style={{ textDecoration: "none", color: "darkgray" }}

@@ -9,11 +9,12 @@ import { postCommentLike } from "../../../api/like/post-like";
 import { postRootComment } from "../../../api/comment/post-comment";
 import { useNavigate } from "react-router-dom";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, onChange }) => {
   const { userId, setListOpen, setUserList, setListType, setArticleOpen } =
     useContext(UserContext);
   const [openReply, setOpenReply] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [likeChange, setLikeChange] = useState(0);
   const [reply, setReply] = useState("");
   const [commentLikes, setCommentLikes] = useState();
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ const Comment = ({ comment }) => {
                     setListOpen(true);
                   }}
                 >
-                  좋아요 {commentLikes?.length ?? 0}개
+                  좋아요 {commentLikes?.length + likeChange}개
                 </Button>
                 <Button
                   variant="text"
@@ -132,7 +133,7 @@ const Comment = ({ comment }) => {
                     setOpenReply(!openReply);
                   }}
                 >
-                  답글 달기
+                  {openReply ? "닫기" : "답글 달기"}
                 </Button>
               </Grid>
             </Grid>
@@ -152,11 +153,13 @@ const Comment = ({ comment }) => {
                   commentId: comment?.commentId,
                   userId: userId,
                 });
+                setLikeChange(likeChange - 1);
               } else {
                 await postCommentLike({
                   commentId: comment?.commentId,
                   userId: userId,
                 });
+                setLikeChange(likeChange + 1);
               }
               setLiked(!liked);
             }}
@@ -169,7 +172,7 @@ const Comment = ({ comment }) => {
           </div>
         </Grid>
         {openReply && (
-          <Grid container direction="row">
+          <Grid container direction="row" justifyContent="end">
             <TextField
               placeholder="답글 작성..."
               variant="standard"
@@ -179,7 +182,7 @@ const Comment = ({ comment }) => {
               }}
               style={{
                 marginLeft: "10px",
-                width: "calc(25vw - 50px)",
+                width: "calc(25vw - 100px)",
                 height: "30px",
               }}
             />
@@ -199,14 +202,17 @@ const Comment = ({ comment }) => {
                     ? mention.slice(mention.indexOf(" ") + 1)
                     : reply;
 
-                await postRootComment({
+                const data = await postRootComment({
                   articleId: comment.articleId,
                   userId: userId,
                   mentionenId: mentions[0],
                   text: commentText,
                   parentCommentId: comment.commentId,
                 });
+                onChange();
+                getCommentLikes(comment?.commentId);
                 setReply("");
+                setOpenReply(false);
               }}
               style={{ width: "30px", height: "30px" }}
             >

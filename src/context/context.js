@@ -23,6 +23,7 @@ const UserContextProvider = ({ children }) => {
   const [postOpen, setPostOpen] = useState(false);
   const [userList, setUserList] = useState([]);
   const [article, setArticle] = useState();
+  const [articleLike, setArticleLike] = useState(false);
   const [articleAuthor, setArticleAuthor] = useState();
   const updateInfo = ({ userId, pw, name, profilePic, url, introduction }) => {
     setUserId(userId);
@@ -77,6 +78,8 @@ const UserContextProvider = ({ children }) => {
         setArticle,
         articleAuthor,
         setArticleAuthor,
+        articleLike,
+        setArticleLike,
       }}
     >
       {children}

@@ -21,14 +21,17 @@ const ArticleModal = () => {
     setListType,
     article,
     articleAuthor,
+    articleLike,
+    setArticleLike,
   } = useContext(UserContext);
   const { userId } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaList, setMediaList] = useState([]);
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState();
-  const [liked, setLiked] = useState(false);
   const [commentDraft, setCommentDraft] = useState("");
+  const [likeChange, setLikeChange] = useState(0);
+
   const getArticleMedia = async (articleId) => {
     const data = await getMedia(articleId);
     setMediaList(data.media);
@@ -39,25 +42,38 @@ const ArticleModal = () => {
     setComments(data.comments);
   };
 
+  const onChange = async () => {
+    getArticleComments(article.articleId);
+    checkLike(article.articleId);
+  };
+
   const checkLike = async (articleId) => {
     const data = await getArticleLike(articleId);
     setLikes(data);
     for (let i = 0; i < data.count; i++) {
       if (data.articleLikeList[i].userId === userId) {
-        setLiked(true);
+        setArticleLike(true);
+        return;
       }
     }
+    setArticleLike(false);
+    return;
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    if (article?.articleId) {
-      getArticleMedia(article.articleId);
-      getArticleComments(article.articleId);
-      checkLike(article.articleId);
+    if (articleOpen) {
+      setIsLoading(true);
+      if (article?.articleId) {
+        getArticleMedia(article.articleId);
+        getArticleComments(article.articleId);
+        checkLike(article.articleId);
+      }
+      setIsLoading(false);
+    } else {
+      setLikeChange(0);
     }
-    setIsLoading(false);
-  }, [article]);
+  }, [articleOpen]);
+
   return (
     <Modal
       open={articleOpen}
@@ -176,8 +192,8 @@ const ArticleModal = () => {
                   </b>
                 </Grid>
                 <p>{article?.text}</p>
-                {comments.map((comment) => (
-                  <Comment comment={comment} />
+                {comments?.map((comment) => (
+                  <Comment comment={comment} onChange={onChange} />
                 ))}
                 {/* comments */}
               </Grid>
@@ -195,21 +211,27 @@ const ArticleModal = () => {
                 id="like"
                 style={{ color: "black" }}
                 onClick={async () => {
-                  if (liked) {
+                  if (articleLike) {
                     await deleteArticleLike({
                       articleId: article.articleId,
                       userId: userId,
                     });
+                    setLikeChange(likeChange - 1);
                   } else {
                     await postArticleLike({
                       articleId: article.articleId,
                       userId: userId,
                     });
+                    setLikeChange(likeChange + 1);
                   }
-                  setLiked(!liked);
+                  setArticleLike(!articleLike);
                 }}
               >
-                {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                {articleLike ? (
+                  <FavoriteIcon style={{ color: "red" }} />
+                ) : (
+                  <FavoriteBorderIcon />
+                )}
               </Button>
               <Button id="comment"></Button>
             </Grid>
@@ -235,7 +257,7 @@ const ArticleModal = () => {
                   setListOpen(true);
                 }}
               >
-                <b>좋아요 {likes?.count ?? 0}개</b>
+                <b>좋아요 {likes?.count + likeChange}개</b>
               </Button>
             </Grid>
             <Grid
@@ -277,12 +299,13 @@ const ArticleModal = () => {
                     mention !== commentDraft
                       ? mention.slice(mention.indexOf(" ") + 1)
                       : commentDraft;
-                  await postRootComment({
+                  const data = await postRootComment({
                     articleId: article.articleId,
                     userId,
                     mentionedId: mentions[0],
                     text: commentText,
                   });
+                  setComments([...comments, data]);
                   setCommentDraft("");
                 }}
               >
