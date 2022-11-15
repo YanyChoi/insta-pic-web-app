@@ -36,7 +36,7 @@ const Home = () => {
       >
         {articleList &&
           articleList.map((article) => (
-            <Article article={article} userId={userId} />
+            <Article article={article} />
           ))}
       </Grid>
       <ArticleModal />
