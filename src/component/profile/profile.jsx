@@ -65,13 +65,13 @@ const Profile = (props) => {
         container
         direction="column"
         justifyContent="center"
-        style={{ width: "930px", margin: "0 auto" }}
+        style={{ width: "630px", margin: "0 auto" }}
       >
         <Grid
           container
           direction="row"
           style={{
-            padding: "50px",
+            padding: "50px 50px 20px 50px",
             marginBottom: "50px",
             borderBottom: "1px solid lightgray",
           }}
@@ -84,11 +84,11 @@ const Profile = (props) => {
               height: "150px",
               objectFit: "cover",
               borderRadius: "50%",
-              marginRight: "100px",
+              marginRight: "50px",
               marginTop: "20px",
             }}
           ></img>
-          <Grid container direction="column" style={{ width: "450px" }}>
+          <Grid container direction="column" style={{ width: "330px" }}>
             <Grid container direction="row">
               <p style={{ fontSize: "30px", marginBottom: "5px" }}>
                 {profileId}
@@ -134,6 +134,9 @@ const Profile = (props) => {
               </b>
             </Grid>
             <h2>{profileInfo?.name}</h2>
+            <a href={profileInfo?.url}>
+              <p style={{ marginTop: "0" }}>{profileInfo?.url}</p>
+            </a>
             <p style={{ margin: "0" }}>{profileInfo?.introduction}</p>
           </Grid>
         </Grid>
@@ -146,15 +149,15 @@ const Profile = (props) => {
                   setArticle(article);
                   setArticleOpen(true);
                 }}
-                style={{ width: "300px", height: "300px", margin: "5px" }}
+                style={{ width: "200px", height: "200px", margin: "5px" }}
               >
                 <img
                   src={article.thumbnail}
                   alt="thumbnail"
                   key={index}
                   style={{
-                    width: "300px",
-                    height: "300px",
+                    width: "200px",
+                    height: "200px",
                     objectFit: "cover",
                   }}
                 />

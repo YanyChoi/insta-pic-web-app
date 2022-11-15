@@ -93,8 +93,8 @@ const Search = () => {
                 direction="row"
                 justifyContent="start"
                 onClick={() => {
-                  navigate(`/profile?id=${user.userId}`);
                   setProfileId(user.userId);
+                  navigate(`/profile?id=${user.userId}`);
                 }}
                 style={{
                   height: "50px",

@@ -19,7 +19,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log(localStorage);
     if (localStorage.length < 6) {
       navigate("/login");
     }

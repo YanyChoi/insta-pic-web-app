@@ -1,4 +1,4 @@
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useContext, useEffect, useState } from "react";
 import { getUser } from "../../api/user/get-user";
@@ -12,6 +12,7 @@ import { postArticleLike } from "../../api/like/post-like";
 import { deleteArticleLike } from "../../api/like/delete-like";
 import { postRootComment } from "../../api/comment/post-comment";
 import { UserContext } from "../../context/context";
+import MentionBox from "./mention";
 
 const Article = ({ article }) => {
   const {
@@ -24,6 +25,7 @@ const Article = ({ article }) => {
     setArticleAuthor,
     articleLike,
     setArticleLike,
+    setProfileId
   } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [media, setMedia] = useState([]);
@@ -32,6 +34,9 @@ const Article = ({ article }) => {
   const [commentDraft, setCommentDraft] = useState("");
   const [author, setAuthor] = useState("");
   const [likeChange, setLikeChange] = useState(0);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionList, setMentionList] = useState([]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
   const getUserInfo = async (userId) => {
     const data = await getUser(userId);
@@ -73,7 +78,7 @@ const Article = ({ article }) => {
 
   const openProfile = (profileId) => {
     navigate(`/profile?id=${profileId}`);
-    window.location.reload();
+    setProfileId(profileId);
   };
 
   useEffect(() => {
@@ -87,6 +92,13 @@ const Article = ({ article }) => {
     checkLike(article.articleId);
     setLikeChange(0);
   }, [articleLike]);
+
+  useEffect(() => {
+    if (showMentions) {
+      const e = window.event;
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    }
+  }, [showMentions]);
 
   return (
     <>
@@ -122,15 +134,6 @@ const Article = ({ article }) => {
               height: "58px",
             }}
           >
-            {/* <Link
-              to={`/profile?id=${author?.userId}`}
-              style={{
-                color: "black",
-                height: "42px",
-                width: "300px",
-                textDecoration: "none",
-              }}
-            > */}
             <Grid direction="row" container>
               <img
                 alt="author"
@@ -146,20 +149,38 @@ const Article = ({ article }) => {
                   cursor: "pointer",
                 }}
               />
-              <p
-                onClick={() => {
-                  openProfile(article.userId);
-                }}
-                style={{
-                  marginRight: "10px",
-                  marginTop: "20px",
-                  cursor: "pointer",
-                }}
+              <Grid
+                container
+                direction="column"
+                style={{ width: "fit-content" }}
               >
-                <b>{article.userId}</b>
-              </p>
+                <p
+                  onClick={() => {
+                    openProfile(article.userId);
+                  }}
+                  style={{
+                    marginBottom: "0px",
+                    marginRight: "10px",
+                    marginTop: !!article.location ? "10px" : "20px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <b>{article.userId}</b>
+                </p>
+                {!!article.location && (
+                  <Typography
+                    style={{
+                      margin: "0px",
+                      fontSize: "14px",
+                      fontWeight: 'lighter',
+                      width: "fit-content",
+                    }}
+                  >
+                    {article.location}
+                  </Typography>
+                )}
+              </Grid>
             </Grid>
-            {/* </Link> */}
             {!isFollowing && (
               <Button
                 style={{
@@ -193,6 +214,10 @@ const Article = ({ article }) => {
           {media.map((singleMedia, index) => (
             <div
               key={index}
+              onClick={() => {
+                setMentionList(singleMedia.mentions);
+                setShowMentions(!showMentions);
+              }}
               style={{
                 width: "470px",
                 height: "470px",
@@ -356,6 +381,10 @@ const Article = ({ article }) => {
           </Button>
         </Grid>
       </div>
+
+      {showMentions && (
+        <MentionBox mentions={mentionList} position={mousePosition} />
+      )}
     </>
   );
 };

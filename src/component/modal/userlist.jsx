@@ -8,7 +8,8 @@ const type = {
   following: "팔로우",
 };
 const UserListModal = () => {
-  const { listOpen, setListOpen, userList, listType } = useContext(UserContext);
+  const { listOpen, setListOpen, userList, listType, setProfileId } =
+    useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {}, [userList]);
@@ -58,6 +59,13 @@ const UserListModal = () => {
                   direction="row"
                   justifyContent="start"
                   onClick={() => {
+                    setProfileId(
+                      listType === "likes"
+                        ? user.userId
+                        : listType === "following"
+                        ? user.followId
+                        : user.userId
+                    );
                     navigate(
                       `/profile?id=${
                         listType === "likes"
@@ -67,7 +75,6 @@ const UserListModal = () => {
                           : user.userId
                       }`
                     );
-                    window.location.reload();
                   }}
                   style={{
                     height: "50px",
