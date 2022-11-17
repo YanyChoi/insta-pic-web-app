@@ -1,18 +1,25 @@
 import { Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/context";
 
 const MentionBox = ({ mentions, position, isModal }) => {
   const { setProfileId } = useContext(UserContext);
+  const [scrollHeight, setScrollHeight] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setScrollHeight(window.pageYOffset);
+  }, [position]);
   return (
     <div
       id="mentionpop"
       style={{
         position: "absolute",
         left: isModal ? `calc(${position.x}px - 10vw)` : position.x,
-        top: isModal ? `calc(${position.y}px - 5vh)` : position.y,
+        top: isModal
+          ? `calc(${position.y}px - 5vh)`
+          : position.y + scrollHeight,
         // left: position.x,
         // top: position.y,
         display: "flex",
