@@ -115,7 +115,7 @@ const ArticleModal = () => {
           <Grid container direction="row">
             <div
               style={{
-                width: "50vw",
+                width: "calc(80vw - 300px)",
                 height: "90vh",
                 backgroundColor: "black",
               }}
@@ -131,14 +131,14 @@ const ArticleModal = () => {
                     justifyContent: "start",
                     overflowX: "scroll",
                     scrollSnapType: "x mandatory !important",
-                    width: `calc(${mediaList.count} * 50vw)`,
+                    width: `calc(${mediaList.count} * (80vw - 300px))`,
                   }}
                 >
                   {mediaList.map((media, index) => (
                     <div
                       key={index}
                       style={{
-                        width: "50vw",
+                        width: "calc(80vw - 300px)",
                         height: "90vh",
                       }}
                       onClick={() => {
@@ -151,7 +151,7 @@ const ArticleModal = () => {
                         alt={media.mediaId}
                         src={media.url}
                         style={{
-                          width: "50vw",
+                          width: "calc(80vw - 300px)",
                           height: "90vh",
                           backgroundColor: "black",
                           objectFit: "contain",
@@ -165,7 +165,7 @@ const ArticleModal = () => {
             <Grid
               container
               direction="column"
-              style={{ width: "30vw", height: "90vh" }}
+              style={{ width: "300px", height: "90vh" }}
             >
               <Grid
                 container
@@ -214,7 +214,7 @@ const ArticleModal = () => {
                 container
                 direction="column"
                 style={{
-                  width: "30vw",
+                  width: "300px",
                   height: "calc(90vh - 200px)",
                   borderBottom: "1px solid lightgray",
                   overflow: "scroll",
@@ -253,7 +253,7 @@ const ArticleModal = () => {
                 direction="row"
                 justifyContent="start"
                 style={{
-                  width: "30vw",
+                  width: "300px",
                   height: "46px",
                 }}
               >
@@ -289,7 +289,7 @@ const ArticleModal = () => {
                 container
                 direction="row"
                 style={{
-                  width: "30vw",
+                  width: "300px",
                   height: "24px",
                   padding: "0px 10px 0px 10px",
                 }}
@@ -315,7 +315,7 @@ const ArticleModal = () => {
                 direction="row"
                 justifyContent="space-between"
                 style={{
-                  width: "30vw",
+                  width: "300px",
                   height: "50px",
                   padding: "8px 14px 8px 14px",
                 }}
@@ -330,7 +330,7 @@ const ArticleModal = () => {
                   value={commentDraft}
                   style={{
                     margin: "0px",
-                    width: "calc(30vw - 95px)",
+                    width: "205px",
                     height: "34px",
                   }}
                 />

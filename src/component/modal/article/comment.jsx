@@ -1,4 +1,4 @@
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, IconButton, Popover, TextField } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { getCommentLike } from "../../../api/like/get-like";
 import { UserContext } from "../../../context/context";
@@ -8,6 +8,8 @@ import { deleteCommentLike } from "../../../api/like/delete-like";
 import { postCommentLike } from "../../../api/like/post-like";
 import { postRootComment } from "../../../api/comment/post-comment";
 import { useNavigate } from "react-router-dom";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { deleteSingleComment } from "../../../api/comment/delete-comment";
 
 const Comment = ({ comment, onChange }) => {
   const {
@@ -23,6 +25,10 @@ const Comment = ({ comment, onChange }) => {
   const [likeChange, setLikeChange] = useState(0);
   const [reply, setReply] = useState("");
   const [commentLikes, setCommentLikes] = useState();
+  const [iconVisible, setIconVisible] = useState(false);
+  const [commentMenu, setCommentMenu] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isDeleted, setIsDeleted] = useState(false);
   const navigate = useNavigate();
   const getCommentLikes = async (commentId) => {
     const data = await getCommentLike(commentId);
@@ -48,6 +54,7 @@ const Comment = ({ comment, onChange }) => {
         direction="column"
         style={{
           padding: "12px 0px 0px 0px",
+          display: isDeleted ? "none" : "block",
         }}
       >
         <Grid container direction="row" justifyContent="space-between">
@@ -68,11 +75,7 @@ const Comment = ({ comment, onChange }) => {
                 borderRadius: "50%",
               }}
             />
-            <Grid
-              container
-              direction="column"
-              style={{ width: "calc(30vw - 130px)" }}
-            >
+            <Grid container direction="column" style={{ width: "200px" }}>
               <Grid
                 container
                 direction="row"
@@ -159,6 +162,38 @@ const Comment = ({ comment, onChange }) => {
                 >
                   {openReply ? "닫기" : "답글 달기"}
                 </Button>
+                {userId === comment?.userId && (
+                  <IconButton
+                    style={{
+                      height: "14px",
+                      width: "14px",
+                      marginTop: "-1px",
+                    }}
+                    onMouseOver={() => {
+                      if (!iconVisible) {
+                        setIconVisible(true);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (iconVisible) {
+                        setIconVisible(false);
+                      }
+                    }}
+                    onClick={(e) => {
+                      setCommentMenu(!commentMenu);
+                      setAnchorEl(e.currentTarget);
+                    }}
+                  >
+                    {iconVisible && (
+                      <MoreHorizIcon
+                        style={{
+                          height: "14px",
+                          width: "14px",
+                        }}
+                      />
+                    )}
+                  </IconButton>
+                )}
               </Grid>
             </Grid>
           </div>
@@ -206,7 +241,7 @@ const Comment = ({ comment, onChange }) => {
               }}
               style={{
                 marginLeft: "10px",
-                width: "calc(25vw - 100px)",
+                width: "200px",
                 height: "30px",
               }}
             />
@@ -249,6 +284,31 @@ const Comment = ({ comment, onChange }) => {
           <Comment comment={childComment} />
         ))}
       </div>
+      <Popover
+        id={commentMenu ? "simple-popover" : undefined}
+        open={commentMenu}
+        anchorEl={anchorEl}
+        onClose={() => {
+          setAnchorEl(null);
+          setCommentMenu(false);
+        }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <Button
+          variant="text"
+          style={{ width: "150px", height: "50px", color: "red" }}
+          onClick={async () => {
+            deleteSingleComment(comment?.commentId);
+            setIsDeleted(true);
+            setCommentMenu(false);
+          }}
+        >
+          댓글 삭제
+        </Button>
+      </Popover>
     </>
   );
 };

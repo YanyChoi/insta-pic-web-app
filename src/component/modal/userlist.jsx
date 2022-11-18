@@ -8,8 +8,14 @@ const type = {
   following: "팔로우",
 };
 const UserListModal = () => {
-  const { listOpen, setListOpen, userList, listType, setProfileId } =
-    useContext(UserContext);
+  const {
+    listOpen,
+    setListOpen,
+    userList,
+    listType,
+    setProfileId,
+    setArticleOpen,
+  } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {}, [userList]);
@@ -75,6 +81,8 @@ const UserListModal = () => {
                           : user.userId
                       }`
                     );
+                    setListOpen(false);
+                    setArticleOpen(false);
                   }}
                   style={{
                     height: "50px",
