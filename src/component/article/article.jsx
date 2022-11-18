@@ -1,4 +1,11 @@
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  IconButton,
+  Popover,
+  TextField,
+  Typography,
+} from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useContext, useEffect, useState } from "react";
 import { getUser } from "../../api/user/get-user";
@@ -13,6 +20,7 @@ import { deleteArticleLike } from "../../api/like/delete-like";
 import { postRootComment } from "../../api/comment/post-comment";
 import { UserContext } from "../../context/context";
 import MentionBox from "./mention";
+import { deleteArticle } from "../../api/article/delete-article";
 
 const Article = ({ article }) => {
   const {
@@ -25,7 +33,7 @@ const Article = ({ article }) => {
     setArticleAuthor,
     articleLike,
     setArticleLike,
-    setProfileId
+    setProfileId,
   } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [media, setMedia] = useState([]);
@@ -37,6 +45,9 @@ const Article = ({ article }) => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionList, setMentionList] = useState([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isDeleted, setIsDeleted] = useState(false);
   const navigate = useNavigate();
   const getUserInfo = async (userId) => {
     const data = await getUser(userId);
@@ -104,7 +115,7 @@ const Article = ({ article }) => {
     <>
       <div
         style={{
-          display: "flex",
+          display: isDeleted ? "none" : "flex",
           flexDirection: "column",
           justifyContent: "start",
           width: "470px",
@@ -172,7 +183,7 @@ const Article = ({ article }) => {
                     style={{
                       margin: "0px",
                       fontSize: "14px",
-                      fontWeight: 'lighter',
+                      fontWeight: "lighter",
                       width: "fit-content",
                     }}
                   >
@@ -193,13 +204,26 @@ const Article = ({ article }) => {
               </Button>
             )}
           </Grid>
-          <MoreHorizIcon
-            style={{
-              width: "40px",
-              height: "40px",
-              margin: "10px 10px 0px 0px",
-            }}
-          ></MoreHorizIcon>
+          {userId === article?.userId && (
+            <IconButton
+              style={{
+                width: "40px",
+                height: "40px",
+                margin: "10px 10px 0px 0px",
+              }}
+              onClick={(e) => {
+                setOpen(!open);
+                setAnchorEl(e.currentTarget);
+              }}
+            >
+              <MoreHorizIcon
+                style={{
+                  width: "40px",
+                  height: "40px",
+                }}
+              ></MoreHorizIcon>
+            </IconButton>
+          )}
         </Grid>
         {/* media */}
         <div
@@ -209,6 +233,7 @@ const Article = ({ article }) => {
             overflowX: "scroll",
             scrollSnapType: "x mandatory !important",
             width: `calc(${media.count} * 470px)`,
+            height: "470px",
           }}
         >
           {media.map((singleMedia, index) => (
@@ -220,7 +245,7 @@ const Article = ({ article }) => {
               }}
               style={{
                 width: "470px",
-                height: "470px",
+                height: "466px",
               }}
             >
               <img
@@ -229,7 +254,7 @@ const Article = ({ article }) => {
                 src={singleMedia.url}
                 style={{
                   width: "470px",
-                  height: "470px",
+                  height: "466px",
                   backgroundColor: "black",
                   objectFit: "contain",
                 }}
@@ -385,6 +410,31 @@ const Article = ({ article }) => {
       {showMentions && (
         <MentionBox mentions={mentionList} position={mousePosition} />
       )}
+      <Popover
+        id={open ? "simple-popover" : undefined}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={() => {
+          setAnchorEl(null);
+          setOpen(false);
+        }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <Button
+          variant="text"
+          style={{ width: "150px", height: "50px", color: "red" }}
+          onClick={async () => {
+            deleteArticle(article?.articleId);
+            setIsDeleted(true);
+            setOpen(false);
+          }}
+        >
+          게시글 삭제
+        </Button>
+      </Popover>
     </>
   );
 };

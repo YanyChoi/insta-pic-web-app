@@ -32,15 +32,7 @@ const PostModal = () => {
     />,
   ];
 
-  const onSubmit = async () => {
-    const postedArticle = await postArticle({ location, text, userId });
-    mediaList.forEach(async (media, index) => {
-      await postMedia(
-        media,
-        mediaMentions[index],
-        postedArticle.articleId
-      );
-    });
+  const initialize = () => {
     setMediaList([]);
     setCanMove(false);
     setMediaMentions([]);
@@ -48,11 +40,21 @@ const PostModal = () => {
     setText("");
   };
 
+  const onSubmit = async () => {
+    const postedArticle = await postArticle({ location, text, userId });
+    mediaList.forEach(async (media, index) => {
+      await postMedia(media, mediaMentions[index], postedArticle.articleId);
+    });
+    initialize();
+  };
+
   return (
     <Modal
       open={postOpen}
       onClose={() => {
         setPostOpen(false);
+        setStep(0);
+        initialize();
       }}
     >
       <Paper
@@ -67,6 +69,7 @@ const PostModal = () => {
         <Grid container direction="column">
           <Grid container direction="row" justifyContent="space-between">
             <Button
+              disabled={step === 0}
               variant="text"
               onClick={() => {
                 setStep(step - 1);
@@ -157,18 +160,20 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
 
   useEffect(() => {
     const list = [];
+    const searchInit = [];
     for (let i = 0; i < mediaList.length; i++) {
       list.push([]);
+      searchInit.push(false);
     }
     setMediaMentions(list);
-    setSearch(list);
+    setSearch(searchInit);
   }, []);
   return (
     <div>
       {mediaList.map((media, mediaIndex) => {
         const url = URL.createObjectURL(media);
         return (
-          <Grid container direction="column">
+          <Grid container direction="row">
             <img
               src={url}
               alt="media"
@@ -186,6 +191,11 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
                   !search[mediaIndex],
                   ...search.slice(mediaIndex + 1),
                 ]);
+                console.log([
+                  ...search.slice(0, mediaIndex),
+                  !search[mediaIndex],
+                  ...search.slice(mediaIndex + 1),
+                ]);
                 const followList = await getFollowing(userId);
                 setFollowers(followList.followList);
               }}
@@ -198,7 +208,12 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
                       container
                       direction="row"
                       justifyContent="start"
-                      style={{ width: "300px", height: "30px", padding: "3px" }}
+                      style={{
+                        width: "200px",
+                        height: "30px",
+                        padding: "3px",
+                        overflowY: "scroll",
+                      }}
                     >
                       <Button
                         onClick={() => {

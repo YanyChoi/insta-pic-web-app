@@ -40,9 +40,18 @@ const MenuButton = () => {
           horizontal: "right",
         }}
       >
-        <Link to="/login">
+        <Link
+          to="/login"
+          style={{
+            textDecoration: "none",
+          }}
+        >
           <Button
-            style={{ width: "150px", height: "50px" }}
+            style={{
+              width: "150px",
+              height: "50px",
+              color: "black",
+            }}
             onClick={() => {
               logout();
               updateInfo({
