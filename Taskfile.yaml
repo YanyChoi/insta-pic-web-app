@@ -1,8 +1,12 @@
 version: 3
 tasks:
+  build:
+    - npm run build
   start:
-    - sudo systemctl start web-app.service
+    - sudo systemctl start nginx
+    - sudo systemctl status nginx
   stop:
-    - sudo systemctl stop web-app.service
+    - sudo systemctl stop nginx
+    - sudo systemctl status nginx
   status:
-    - sudo systemctl status web-app.service
+    - sudo systemctl status nginx
