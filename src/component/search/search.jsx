@@ -30,7 +30,6 @@ const Search = () => {
       direction="column"
       style={{
         width: "60vw",
-        height: "60vh",
         margin: "50px 0px 0px calc((100vw - 100px) / 4)",
       }}
     >
@@ -75,6 +74,7 @@ const Search = () => {
         style={{
           width: "60vw",
           padding: "30px",
+          overflowY: "scroll",
         }}
       >
         {searchResult.map((user) => {
@@ -84,7 +84,7 @@ const Search = () => {
               direction="row"
               justifyContent="space-between"
               style={{
-                width: "60vw",
+                width: "300px",
                 height: "50px",
               }}
             >

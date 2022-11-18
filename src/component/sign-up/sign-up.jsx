@@ -1,6 +1,7 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../api/user/login";
 import { signUp } from "../../api/user/sign-up";
 import { UserContext } from "../../context/context";
 
@@ -146,7 +147,7 @@ const SignUp = () => {
         <Button
           variant="contained"
           onClick={async () => {
-            const userInfo = await signUp({
+            await signUp({
               introduction,
               name,
               profilePicFile,
@@ -154,6 +155,7 @@ const SignUp = () => {
               url,
               id,
             });
+            const userInfo = await login(id, pw);
             await updateInfo(userInfo);
             if (userInfo) {
               navigate("/");
