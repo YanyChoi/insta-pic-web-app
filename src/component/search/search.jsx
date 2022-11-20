@@ -30,7 +30,7 @@ const Search = () => {
       direction="column"
       style={{
         width: "60vw",
-        margin: "50px 0px 0px calc((100vw - 100px) / 4)",
+        margin: "50px 0px 0px calc(25vw)",
       }}
     >
       <Grid
@@ -84,7 +84,7 @@ const Search = () => {
               direction="row"
               justifyContent="space-between"
               style={{
-                width: "300px",
+                width: "calc(60vw - 60px)",
                 height: "50px",
               }}
             >
