@@ -120,7 +120,7 @@ const Article = ({ article }) => {
           justifyContent: "start",
           width: "470px",
           border: "1px solid lightgray",
-          marginLeft: "calc((80vw - 570px) / 2)",
+          marginLeft: "calc((100vw - 570px) / 2)",
           marginTop: "30px",
           borderRadius: "10px",
         }}

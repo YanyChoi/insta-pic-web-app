@@ -279,7 +279,7 @@ const Comment = ({ comment, onChange }) => {
           </Grid>
         )}
       </Grid>
-      <div style={{ marginLeft: 40 }}>
+      <div style={{ marginLeft: 20 }}>
         {comment?.childComments.map((childComment) => (
           <Comment comment={childComment} />
         ))}
