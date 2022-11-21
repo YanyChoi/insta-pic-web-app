@@ -77,11 +77,12 @@ const Search = () => {
           overflowY: "scroll",
         }}
       >
-        {searchResult.map((user) => {
+        {searchResult.map((user, index) => {
           return (
             <Grid
               container
               direction="row"
+              key={index}
               justifyContent="space-between"
               style={{
                 width: "calc(60vw - 60px)",
@@ -92,6 +93,7 @@ const Search = () => {
                 container
                 direction="row"
                 justifyContent="start"
+                key={index}
                 onClick={() => {
                   setProfileId(user.userId);
                   navigate(`/profile?id=${user.userId}`);
@@ -112,7 +114,7 @@ const Search = () => {
                     marginRight: "10px",
                   }}
                 />
-                <p style={{ marginTop: "3px" }}>
+                <p key={index} style={{ marginTop: "3px" }}>
                   <b>{user?.userId}</b>
                   <br />
                   {user?.name}

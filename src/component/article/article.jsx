@@ -34,6 +34,7 @@ const Article = ({ article }) => {
     articleLike,
     setArticleLike,
     setProfileId,
+    setLocation,
   } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [media, setMedia] = useState([]);
@@ -90,6 +91,11 @@ const Article = ({ article }) => {
   const openProfile = (profileId) => {
     navigate(`/profile?id=${profileId}`);
     setProfileId(profileId);
+  };
+
+  const openLocation = (location) => {
+    navigate(`/location?location=${location}`);
+    setLocation(location);
   };
 
   useEffect(() => {
@@ -185,6 +191,10 @@ const Article = ({ article }) => {
                       fontSize: "14px",
                       fontWeight: "lighter",
                       width: "fit-content",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      openLocation(article.location);
                     }}
                   >
                     {article.location}
@@ -241,7 +251,9 @@ const Article = ({ article }) => {
               key={index}
               onClick={() => {
                 setMentionList(singleMedia.mentions);
-                setShowMentions(!showMentions);
+                if (singleMedia.mentions.length > 0) {
+                  setShowMentions(!showMentions);
+                }
               }}
               style={{
                 width: "470px",

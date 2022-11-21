@@ -220,11 +220,13 @@ const MentionUsers = ({ mediaList, mediaMentions, setMediaMentions }) => {
                           const mentions = mediaMentions[mediaIndex];
                           if (mentions.includes(follower.followId)) {
                             mentions.splice(
-                              mentions.indexOf(follower.followId)
+                              mentions.indexOf(follower.followId),
+                              1
                             );
                           } else {
                             mentions.push(follower.followId);
                           }
+                          console.log(mentions);
                           setMediaMentions([
                             ...mediaMentions.slice(0, mediaIndex),
                             mentions,

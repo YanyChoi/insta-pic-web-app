@@ -6,7 +6,6 @@ const HomeButton = () => {
     <>
       <Link to="/">
         <Button
-          onClick={() => {}}
           style={{ width: 100, height: 70, color: "black" }}
         >
           <HomeOutlinedIcon style={{ width: 35, height: 35 }} />

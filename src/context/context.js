@@ -17,6 +17,9 @@ const UserContextProvider = ({ children }) => {
   const [profileId, setProfileId] = useState(
     queryString.parse(window.location.search).id
   );
+  const [location, setLocation] = useState(
+    queryString.parse(window.location.search).location
+  );
   const [listOpen, setListOpen] = useState(false);
   const [listType, setListType] = useState("");
   const [articleOpen, setArticleOpen] = useState(false);
@@ -80,6 +83,8 @@ const UserContextProvider = ({ children }) => {
         setArticleAuthor,
         articleLike,
         setArticleLike,
+        location,
+        setLocation,
       }}
     >
       {children}
