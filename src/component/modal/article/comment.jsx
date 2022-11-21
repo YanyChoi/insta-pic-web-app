@@ -280,8 +280,8 @@ const Comment = ({ comment, onChange }) => {
         )}
       </Grid>
       <div style={{ marginLeft: 20 }}>
-        {comment?.childComments.map((childComment) => (
-          <Comment comment={childComment} />
+        {comment?.childComments.map((childComment, index) => (
+          <Comment key={index} comment={childComment} />
         ))}
       </div>
       <Popover

@@ -10,6 +10,7 @@ import UserContextProvider from "./context/context";
 import SignUp from "./component/sign-up/sign-up";
 import Profile from "./component/profile/profile";
 import Search from "./component/search/search";
+import LocationArticlePage from "./component/profile/location";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -41,6 +42,14 @@ root.render(
             element={
               <Wrap>
                 <Search />
+              </Wrap>
+            }
+          ></Route>
+          <Route
+            path="location"
+            element={
+              <Wrap>
+                <LocationArticlePage />
               </Wrap>
             }
           ></Route>

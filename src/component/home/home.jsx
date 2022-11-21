@@ -38,7 +38,7 @@ const Home = () => {
         }}
       >
         {articleList.length > 0 ? (
-          articleList.map((article) => <Article article={article} />)
+          articleList.map((article, index) => <Article key={index} article={article} />)
         ) : (
           <div
             style={{

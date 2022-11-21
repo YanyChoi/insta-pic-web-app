@@ -12,15 +12,13 @@ import { getUser } from "../../api/user/get-user";
 import { UserContext } from "../../context/context";
 import ArticleModal from "../modal/article";
 import UserListModal from "../modal/userlist";
+import ArticleBlock from "./article-block";
 const Profile = (props) => {
   const {
     userId,
-    setArticleOpen,
-    setArticle,
     setListOpen,
     setListType,
     setUserList,
-    setArticleAuthor,
     profileId,
   } = useContext(UserContext);
   const [profileInfo, setProfileInfo] = useState();
@@ -141,29 +139,12 @@ const Profile = (props) => {
           </Grid>
         </Grid>
         <div>
-          {articles?.articleList.map((article, index) => {
-            return (
-              <Button
-                onClick={() => {
-                  setArticleAuthor(profileInfo);
-                  setArticle(article);
-                  setArticleOpen(true);
-                }}
-                style={{ width: "200px", height: "200px", margin: "5px" }}
-              >
-                <img
-                  src={article.thumbnail}
-                  alt="thumbnail"
-                  key={index}
-                  style={{
-                    width: "200px",
-                    height: "200px",
-                    objectFit: "cover",
-                  }}
-                />
-              </Button>
-            );
-          })}
+          {articles?.articleList.map((article, index) => (
+            <ArticleBlock
+              key={index}
+              article={article}
+            />
+          ))}
         </div>
       </Grid>
       <ArticleModal />

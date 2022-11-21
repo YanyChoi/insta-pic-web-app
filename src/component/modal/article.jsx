@@ -19,6 +19,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Comment from "./article/comment";
 import { postRootComment } from "../../api/comment/post-comment";
 import MentionBox from "../article/mention";
+import { useNavigate } from "react-router-dom";
 
 const ArticleModal = () => {
   const {
@@ -31,6 +32,8 @@ const ArticleModal = () => {
     articleAuthor,
     articleLike,
     setArticleLike,
+    setProfileId,
+    setLocation,
   } = useContext(UserContext);
   const { userId } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +45,7 @@ const ArticleModal = () => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionList, setMentionList] = useState([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
 
   const getArticleMedia = async (articleId) => {
     const data = await getMedia(articleId);
@@ -69,6 +73,18 @@ const ArticleModal = () => {
     }
     setArticleLike(false);
     return;
+  };
+
+  const openProfile = (profileId) => {
+    navigate(`/profile?id=${profileId}`);
+    setProfileId(profileId);
+    setArticleOpen(false);
+  };
+
+  const openLocation = (location) => {
+    navigate(`/location?location=${location}`);
+    setLocation(location);
+    setArticleOpen(false);
   };
 
   useEffect(() => {
@@ -143,7 +159,9 @@ const ArticleModal = () => {
                       }}
                       onClick={() => {
                         setMentionList(media.mentions);
-                        setShowMentions(!showMentions);
+                        if (media.mentions.length > 0) {
+                          setShowMentions(!showMentions);
+                        }
                       }}
                     >
                       <img
@@ -179,7 +197,15 @@ const ArticleModal = () => {
                 <img
                   alt="profile"
                   src={articleAuthor?.profilePic}
-                  style={{ width: "32px", height: "32px", borderRadius: "50%" }}
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    openProfile(articleAuthor?.userId);
+                  }}
                 />
                 <Grid
                   container
@@ -192,6 +218,10 @@ const ArticleModal = () => {
                       marginLeft: "14px",
                       marginTop: !!article?.location ? "0px" : "7px",
                       width: "fit-content",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      openProfile(articleAuthor?.userId);
                     }}
                   >
                     {articleAuthor?.userId}
@@ -203,6 +233,10 @@ const ArticleModal = () => {
                         fontSize: "12px",
                         fontWeight: "lighter",
                         width: "fit-content",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        openLocation(article.location);
                       }}
                     >
                       {article.location}
@@ -229,6 +263,10 @@ const ArticleModal = () => {
                         width: "32px",
                         height: "32px",
                         borderRadius: "50%",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        openProfile(articleAuthor?.userId);
                       }}
                     />
                     <b
@@ -236,14 +274,22 @@ const ArticleModal = () => {
                         fontSize: "14px",
                         marginLeft: "14px",
                         marginTop: "7px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        openProfile(articleAuthor?.userId);
                       }}
                     >
                       {articleAuthor?.userId}
                     </b>
                   </Grid>
                   <p>{article?.text}</p>
-                  {comments?.map((comment) => (
-                    <Comment comment={comment} onChange={onChange} />
+                  {comments?.map((comment, index) => (
+                    <Comment
+                      key={index}
+                      comment={comment}
+                      onChange={onChange}
+                    />
                   ))}
                   {/* comments */}
                 </Grid>
