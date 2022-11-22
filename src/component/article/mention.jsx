@@ -31,8 +31,9 @@ const MentionBox = ({ mentions, position, isModal }) => {
         borderRadius: "5px",
       }}
     >
-      {mentions?.map((mention) => (
+      {mentions?.map((mention, index) => (
         <Typography
+          key={index}
           style={{
             margin: "0",
             fontSize: "14px",

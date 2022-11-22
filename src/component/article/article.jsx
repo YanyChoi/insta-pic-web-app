@@ -21,6 +21,7 @@ import { postRootComment } from "../../api/comment/post-comment";
 import { UserContext } from "../../context/context";
 import MentionBox from "./mention";
 import { deleteArticle } from "../../api/article/delete-article";
+import Media from "./media";
 
 const Article = ({ article }) => {
   const {
@@ -235,45 +236,14 @@ const Article = ({ article }) => {
             </IconButton>
           )}
         </Grid>
-        {/* media */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            overflowX: "scroll",
-            scrollSnapType: "x mandatory !important",
-            width: `calc(${media.count} * 470px)`,
-            height: "470px",
-          }}
-        >
-          {media.map((singleMedia, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                setMentionList(singleMedia.mentions);
-                if (singleMedia.mentions.length > 0) {
-                  setShowMentions(!showMentions);
-                }
-              }}
-              style={{
-                width: "470px",
-                height: "466px",
-              }}
-            >
-              <img
-                key={singleMedia.mediaId}
-                alt={singleMedia.mediaId}
-                src={singleMedia.url}
-                style={{
-                  width: "470px",
-                  height: "466px",
-                  backgroundColor: "black",
-                  objectFit: "contain",
-                }}
-              ></img>
-            </div>
-          ))}
-        </div>
+        <Media
+          media={media}
+          setMentionList={setMentionList}
+          showMentions={showMentions}
+          setShowMentions={setShowMentions}
+          width="470px"
+          height="470px"
+        />
         <Grid
           container
           direction="row"
