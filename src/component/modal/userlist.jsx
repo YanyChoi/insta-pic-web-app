@@ -51,16 +51,20 @@ const UserListModal = () => {
             container
             direction="column"
             style={{
-              overflow: "scroll",
+              width: "400px",
+              height: "350px",
+              overflowY: "scroll",
             }}
           >
-            {userList?.map((user) => (
+            {userList?.map((user, index) => (
               <Grid
+                key={index}
                 container
                 direction="row"
-                style={{ width: "400px", height: "60px", padding: "8px 16px" }}
+                style={{ height: "60px", padding: "8px 16px" }}
               >
                 <Grid
+                  key={index}
                   container
                   direction="row"
                   justifyContent="start"
@@ -90,6 +94,7 @@ const UserListModal = () => {
                   }}
                 >
                   <img
+                    key={index}
                     alt="profile"
                     src={user.profilePic}
                     style={{

@@ -20,6 +20,7 @@ import Comment from "./article/comment";
 import { postRootComment } from "../../api/comment/post-comment";
 import MentionBox from "../article/mention";
 import { useNavigate } from "react-router-dom";
+import Media from "../article/media";
 
 const ArticleModal = () => {
   const {
@@ -141,43 +142,14 @@ const ArticleModal = () => {
                   <CircularProgress />
                 </>
               ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "start",
-                    overflowX: "scroll",
-                    scrollSnapType: "x mandatory !important",
-                    width: `calc(${mediaList.count} * (80vw - 300px))`,
-                  }}
-                >
-                  {mediaList.map((media, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        width: "calc(80vw - 300px)",
-                        height: "90vh",
-                      }}
-                      onClick={() => {
-                        setMentionList(media.mentions);
-                        if (media.mentions.length > 0) {
-                          setShowMentions(!showMentions);
-                        }
-                      }}
-                    >
-                      <img
-                        key={media.mediaId}
-                        alt={media.mediaId}
-                        src={media.url}
-                        style={{
-                          width: "calc(80vw - 300px)",
-                          height: "90vh",
-                          backgroundColor: "black",
-                          objectFit: "contain",
-                        }}
-                      ></img>
-                    </div>
-                  ))}
-                </div>
+                <Media
+                  media={mediaList}
+                  setMentionList={setMentionList}
+                  showMentions={showMentions}
+                  setShowMentions={setShowMentions}
+                  width="calc(80vw - 300px)"
+                  height="90vh"
+                />
               )}
             </div>
             <Grid
@@ -248,13 +220,16 @@ const ArticleModal = () => {
                 container
                 direction="column"
                 style={{
-                  width: "300px",
                   height: "calc(90vh - 200px)",
                   borderBottom: "1px solid lightgray",
-                  overflow: "scroll",
+                  overflowY: "scroll",
                 }}
               >
-                <Grid container direction="column" style={{ padding: "16px" }}>
+                <Grid
+                  container
+                  direction="column"
+                  style={{ padding: "15px 5px 15px 15px" }}
+                >
                   <Grid container direction="row">
                     <img
                       alt="profile"

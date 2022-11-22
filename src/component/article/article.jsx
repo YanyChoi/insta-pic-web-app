@@ -21,6 +21,7 @@ import { postRootComment } from "../../api/comment/post-comment";
 import { UserContext } from "../../context/context";
 import MentionBox from "./mention";
 import { deleteArticle } from "../../api/article/delete-article";
+import Media from "./media";
 
 const Article = ({ article }) => {
   const {
@@ -162,6 +163,7 @@ const Article = ({ article }) => {
                   width: "42px",
                   height: "42px",
                   borderRadius: "50%",
+                  objectFit: "cover",
                   margin: "10px 10px 0px 0px",
                   cursor: "pointer",
                 }}
@@ -235,45 +237,14 @@ const Article = ({ article }) => {
             </IconButton>
           )}
         </Grid>
-        {/* media */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            overflowX: "scroll",
-            scrollSnapType: "x mandatory !important",
-            width: `calc(${media.count} * 470px)`,
-            height: "470px",
-          }}
-        >
-          {media.map((singleMedia, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                setMentionList(singleMedia.mentions);
-                if (singleMedia.mentions.length > 0) {
-                  setShowMentions(!showMentions);
-                }
-              }}
-              style={{
-                width: "470px",
-                height: "466px",
-              }}
-            >
-              <img
-                key={singleMedia.mediaId}
-                alt={singleMedia.mediaId}
-                src={singleMedia.url}
-                style={{
-                  width: "470px",
-                  height: "466px",
-                  backgroundColor: "black",
-                  objectFit: "contain",
-                }}
-              ></img>
-            </div>
-          ))}
-        </div>
+        <Media
+          media={media}
+          setMentionList={setMentionList}
+          showMentions={showMentions}
+          setShowMentions={setShowMentions}
+          width="470px"
+          height="470px"
+        />
         <Grid
           container
           direction="row"
@@ -349,7 +320,15 @@ const Article = ({ article }) => {
           }}
         >
           <p style={{ margin: "0" }}>
-            <b>{article.userId}</b> {article.text}
+            <b
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                openProfile(article.userId);
+              }}
+            >
+              {article.userId}
+            </b>{" "}
+            {article.text}
           </p>
           <a
             onClick={() => {

@@ -5,9 +5,7 @@ const HomeButton = () => {
   return (
     <>
       <Link to="/">
-        <Button
-          style={{ width: 100, height: 70, color: "black" }}
-        >
+        <Button style={{ width: 100, height: 70, color: "black" }}>
           <HomeOutlinedIcon style={{ width: 35, height: 35 }} />
         </Button>
       </Link>

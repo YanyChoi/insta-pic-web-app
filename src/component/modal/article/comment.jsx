@@ -73,6 +73,12 @@ const Comment = ({ comment, onChange }) => {
                 width: "32px",
                 height: "32px",
                 borderRadius: "50%",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setArticleOpen(false);
+                setProfileId(comment?.userId);
+                navigate(`/profile?id=${comment?.userId}`);
               }}
             />
             <Grid container direction="column" style={{ width: "200px" }}>
@@ -140,6 +146,7 @@ const Comment = ({ comment, onChange }) => {
                     fontSize: "12px",
                     height: "14px",
                     color: "gray",
+                    marginTop: "2px",
                   }}
                   onClick={() => {
                     setListType("likes");
@@ -149,19 +156,22 @@ const Comment = ({ comment, onChange }) => {
                 >
                   좋아요 {commentLikes?.length + likeChange}개
                 </Button>
-                <Button
-                  variant="text"
-                  style={{
-                    fontSize: "12px",
-                    height: "14px",
-                    color: "gray",
-                  }}
-                  onClick={() => {
-                    setOpenReply(!openReply);
-                  }}
-                >
-                  {openReply ? "닫기" : "답글 달기"}
-                </Button>
+                {comment.parentCommentId === 0 && (
+                  <Button
+                    variant="text"
+                    style={{
+                      fontSize: "12px",
+                      height: "14px",
+                      color: "gray",
+                      marginTop: "2px",
+                    }}
+                    onClick={() => {
+                      setOpenReply(!openReply);
+                    }}
+                  >
+                    {openReply ? "닫기" : "답글 달기"}
+                  </Button>
+                )}
                 {userId === comment?.userId && (
                   <IconButton
                     style={{
@@ -240,8 +250,7 @@ const Comment = ({ comment, onChange }) => {
                 setReply(e.target.value);
               }}
               style={{
-                marginLeft: "10px",
-                width: "200px",
+                width: "180px",
                 height: "30px",
               }}
             />
@@ -272,14 +281,14 @@ const Comment = ({ comment, onChange }) => {
                 setReply("");
                 setOpenReply(false);
               }}
-              style={{ width: "30px", height: "30px" }}
+              style={{ height: "32px" }}
             >
               게시
             </Button>
           </Grid>
         )}
       </Grid>
-      <div style={{ marginLeft: 20 }}>
+      <div style={{ marginLeft: 15 }}>
         {comment?.childComments.map((childComment, index) => (
           <Comment key={index} comment={childComment} />
         ))}
