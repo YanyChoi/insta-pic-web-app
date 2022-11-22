@@ -320,7 +320,15 @@ const Article = ({ article }) => {
           }}
         >
           <p style={{ margin: "0" }}>
-            <b>{article.userId}</b> {article.text}
+            <b
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                openProfile(article.userId);
+              }}
+            >
+              {article.userId}
+            </b>{" "}
+            {article.text}
           </p>
           <a
             onClick={() => {

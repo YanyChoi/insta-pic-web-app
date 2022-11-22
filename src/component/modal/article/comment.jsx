@@ -73,6 +73,12 @@ const Comment = ({ comment, onChange }) => {
                 width: "32px",
                 height: "32px",
                 borderRadius: "50%",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setArticleOpen(false);
+                setProfileId(comment?.userId);
+                navigate(`/profile?id=${comment?.userId}`);
               }}
             />
             <Grid container direction="column" style={{ width: "200px" }}>

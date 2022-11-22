@@ -1,5 +1,7 @@
 version: 3
 tasks:
+  prettier:
+    - yarn prettier -w ./src
   build:
     - yarn build
   start:
