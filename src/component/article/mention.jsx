@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/context";
 
 const MentionBox = ({ mentions, position, isModal }) => {
-  const { setProfileId } = useContext(UserContext);
+  const { setProfileId, setArticleOpen } = useContext(UserContext);
   const [scrollHeight, setScrollHeight] = useState(0);
   const navigate = useNavigate();
 
@@ -43,6 +43,9 @@ const MentionBox = ({ mentions, position, isModal }) => {
           onClick={() => {
             setProfileId(mention);
             navigate(`/profile?id=${mention}`);
+            if (isModal) {
+              setArticleOpen(false);
+            }
           }}
         >
           {mention}

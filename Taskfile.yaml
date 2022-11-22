@@ -1,7 +1,7 @@
 version: 3
 tasks:
   build:
-    - npm run build
+    - yarn build
   start:
     - sudo systemctl start nginx
     - sudo systemctl status nginx

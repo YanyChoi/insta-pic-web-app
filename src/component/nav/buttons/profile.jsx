@@ -19,7 +19,12 @@ const ProfileButton = () => {
           src={profilePic}
           alt="profile"
           key={Date.now()}
-          style={{ borderRadius: "50%", width: "35px", height: "35px" }}
+          style={{
+            borderRadius: "50%",
+            width: "35px",
+            height: "35px",
+            objectFit: "cover",
+          }}
         />
       </div>
     </Button>

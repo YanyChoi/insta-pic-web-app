@@ -163,6 +163,7 @@ const Article = ({ article }) => {
                   width: "42px",
                   height: "42px",
                   borderRadius: "50%",
+                  objectFit: "cover",
                   margin: "10px 10px 0px 0px",
                   cursor: "pointer",
                 }}

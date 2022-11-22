@@ -36,7 +36,7 @@ const Media = ({
       style={{
         display: "flex",
         justifyContent: "start",
-        overflowX: "scroll",
+        overflowX: media.length > 1 ? "scroll" : "hidden",
         overflowY: "hidden",
         scrollSnapType: "x mandatory",
         transition: "1s",

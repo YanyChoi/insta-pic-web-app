@@ -150,45 +150,6 @@ const ArticleModal = () => {
                   width="calc(80vw - 300px)"
                   height="90vh"
                 />
-                // <div
-                //   style={{
-                //     display: "flex",
-                //     justifyContent: "start",
-                //     overflowX: "scroll",
-                //     transition: "1s",
-                //     scrollSnapType: "x mandatory",
-                //     width: `calc(${mediaList.count} * (80vw - 300px))`,
-                //   }}
-                // >
-                //   {mediaList.map((media, index) => (
-                //     <div
-                //       key={index}
-                //       style={{
-                //         width: "calc(80vw - 300px)",
-                //         height: "90vh",
-                //         scrollSnapAlign: "center",
-                //       }}
-                //       onClick={() => {
-                //         setMentionList(media.mentions);
-                //         if (media.mentions.length > 0) {
-                //           setShowMentions(!showMentions);
-                //         }
-                //       }}
-                //     >
-                //       <img
-                //         key={media.mediaId}
-                //         alt={media.mediaId}
-                //         src={media.url}
-                //         style={{
-                //           width: "calc(80vw - 300px)",
-                //           height: "90vh",
-                //           backgroundColor: "black",
-                //           objectFit: "contain",
-                //         }}
-                //       ></img>
-                //     </div>
-                //   ))}
-                // </div>
               )}
             </div>
             <Grid
@@ -259,13 +220,16 @@ const ArticleModal = () => {
                 container
                 direction="column"
                 style={{
-                  width: "300px",
                   height: "calc(90vh - 200px)",
                   borderBottom: "1px solid lightgray",
-                  overflow: "scroll",
+                  overflowY: "scroll",
                 }}
               >
-                <Grid container direction="column" style={{ padding: "16px" }}>
+                <Grid
+                  container
+                  direction="column"
+                  style={{ padding: "15px 5px 15px 15px" }}
+                >
                   <Grid container direction="row">
                     <img
                       alt="profile"
