@@ -357,6 +357,7 @@ const ArticleModal = () => {
                 />
                 <Button
                   variant="text"
+                  disabled={commentDraft === ""}
                   onClick={async () => {
                     const mentions = [];
                     let mention = commentDraft;
