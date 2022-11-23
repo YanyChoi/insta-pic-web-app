@@ -204,7 +204,7 @@ const Article = ({ article }) => {
                 )}
               </Grid>
             </Grid>
-            {!isFollowing && (
+            {/* {!isFollowing && (
               <Button
                 style={{
                   textDecoration: "none",
@@ -214,7 +214,7 @@ const Article = ({ article }) => {
               >
                 <p>팔로우</p>
               </Button>
-            )}
+            )} */}
           </Grid>
           {userId === article?.userId && (
             <IconButton
@@ -371,6 +371,7 @@ const Article = ({ article }) => {
           />
           <Button
             variant="text"
+            disabled={commentDraft === ""}
             onClick={async () => {
               const mentions = [];
               let mention = commentDraft;

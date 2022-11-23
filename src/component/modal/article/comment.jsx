@@ -119,8 +119,8 @@ const Comment = ({ comment, onChange }) => {
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        setProfileId(comment?.userId);
-                        navigate(`/profile?id=${comment?.userId}`);
+                        setProfileId(comment?.mentionedId);
+                        navigate(`/profile?id=${comment?.mentionedId}`);
                         setArticleOpen(false);
                       }}
                     >
@@ -256,6 +256,7 @@ const Comment = ({ comment, onChange }) => {
             />
             <Button
               variant="text"
+              disabled={reply === ""}
               onClick={async () => {
                 const mentions = [];
                 let mention = reply;
