@@ -3,7 +3,8 @@ tasks:
   prettier:
     - yarn prettier -w ./src
   build:
-    - yarn build
+    - sudo sh -c "/usr/bin/echo 3 > /proc/sys/vm/drop_caches"
+    - sudo yarn build
   start:
     - sudo systemctl start nginx
     - sudo systemctl status nginx
