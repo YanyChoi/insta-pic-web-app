@@ -13,3 +13,15 @@ tasks:
     - sudo systemctl status nginx
   status:
     - sudo systemctl status nginx
+  docker:
+    cmds:
+      - yarn build
+      - docker build -t yhc0818/insta-pic-web-app:latest .
+  deploy:
+    cmds:
+      - yarn build
+      - docker build -t yhc0818/insta-pic-web-app:latest --platform linux/amd64 .
+      - docker push yhc0818/insta-pic-web-app:latest
+  expose:
+    cmds:
+      - docker run -d -p 80:80 yhc0818/insta-pic-web-app
