@@ -1,19 +1,22 @@
 import { createContext, useState } from "react";
 import queryString from "query-string";
+import { getMyUser } from "../api/user/get-user";
 
 export const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
-  const [userId, setUserId] = useState(localStorage.getItem("userId"));
-  const [pw, setPw] = useState(localStorage.getItem("pw"));
-  const [name, setName] = useState(localStorage.getItem("name"));
-  const [profilePic, setProfilePic] = useState(
-    localStorage.getItem("profilePic")
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem("accessToken")
   );
-  const [url, setUrl] = useState(localStorage.getItem("url"));
-  const [introduction, setIntroduction] = useState(
-    localStorage.getItem("introduction")
+  const [refreshToken, setRefreshToken] = useState(
+    localStorage.getItem("refreshToken")
   );
+  const [userId, setUserId] = useState();
+  const [userName, setUserName] = useState();
+  const [fullName, setFullName] = useState();
+  const [profilePic, setProfilePic] = useState();
+  const [url, setUrl] = useState();
+  const [bio, setBio] = useState();
   const [profileId, setProfileId] = useState(
     queryString.parse(window.location.search).id
   );
@@ -28,43 +31,48 @@ const UserContextProvider = ({ children }) => {
   const [article, setArticle] = useState();
   const [articleLike, setArticleLike] = useState(false);
   const [articleAuthor, setArticleAuthor] = useState();
-  const updateInfo = ({ userId, pw, name, profilePic, url, introduction }) => {
-    setUserId(userId);
-    setPw(pw);
-    setName(name);
-    setProfilePic(profilePic);
-    setUrl(url);
-    setIntroduction(introduction);
+  const updateInfo = async () => {
+    const userInfo = await getMyUser();
+    setUserId(userInfo.userId);
+    setUserName(userInfo.userName);
+    setFullName(userInfo.fullName);
+    setBio(userInfo.bio);
+    setUrl(userInfo.url);
+    setProfilePic(userInfo.profilePictureUrl);
+    return userInfo.userId;
   };
 
   const userInfo = () => {
     return {
       userId: userId,
-      pw: pw,
-      name: name,
+      userName: userName,
       profilePic: profilePic,
       url: url,
-      introduction: introduction,
+      bio: bio,
     };
   };
 
   return (
     <UserContext.Provider
       value={{
+        accessToken,
+        setAccessToken,
+        refreshToken,
+        setRefreshToken,
         userId,
-        pw,
-        name,
+        userName,
+        fullName,
         profilePic,
         url,
-        introduction,
+        bio,
         profileId,
         setProfileId,
         setUserId,
-        setPw,
-        setName,
+        setUserName,
+        setFullName,
         setProfilePic,
         setUrl,
-        setIntroduction,
+        setBio,
         updateInfo,
         userInfo,
         listOpen,

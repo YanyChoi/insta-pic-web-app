@@ -72,16 +72,12 @@ const UserListModal = () => {
                     setProfileId(
                       listType === "likes"
                         ? user.userId
-                        : listType === "following"
-                        ? user.followId
                         : user.userId
                     );
                     navigate(
                       `/profile?id=${
                         listType === "likes"
                           ? user.userId
-                          : listType === "following"
-                          ? user.followId
                           : user.userId
                       }`
                     );
@@ -96,7 +92,7 @@ const UserListModal = () => {
                   <img
                     key={index}
                     alt="profile"
-                    src={user.profilePic}
+                    src={user.profilePictureUrl}
                     style={{
                       width: "44px",
                       height: "44px",
@@ -106,11 +102,7 @@ const UserListModal = () => {
                   />
                   <p style={{ marginTop: "10px" }}>
                     <b>
-                      {listType === "likes"
-                        ? user.userId
-                        : listType === "following"
-                        ? user.followId
-                        : user.userId}
+                      {user.userName}
                     </b>
                   </p>
                 </Grid>

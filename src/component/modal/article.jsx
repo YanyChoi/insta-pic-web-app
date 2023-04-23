@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { getMedia } from "../../api/media/get-media";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getComments } from "../../api/comment/get-comment";
 import { getArticleLike } from "../../api/like/get-like";
@@ -24,6 +23,7 @@ import Media from "../article/media";
 
 const ArticleModal = () => {
   const {
+    userId,
     articleOpen,
     setArticleOpen,
     setListOpen,
@@ -36,7 +36,6 @@ const ArticleModal = () => {
     setProfileId,
     setLocation,
   } = useContext(UserContext);
-  const { userId } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaList, setMediaList] = useState([]);
   const [comments, setComments] = useState([]);
@@ -48,23 +47,18 @@ const ArticleModal = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
 
-  const getArticleMedia = async (articleId) => {
-    const data = await getMedia(articleId);
-    setMediaList(data.media);
-  };
-
-  const getArticleComments = async (articleId) => {
-    const data = await getComments(articleId);
+  const getArticleComments = async (articleId, lastCommentId, size) => {
+    const data = await getComments(articleId, lastCommentId, size);
     setComments(data.comments);
   };
 
   const onChange = async () => {
-    getArticleComments(article.articleId);
+    getArticleComments(article.articleId, 0, 10);
     checkLike(article.articleId);
   };
 
   const checkLike = async (articleId) => {
-    const data = await getArticleLike(articleId);
+    const data = await getArticleLike(articleId, 0, 10);
     setLikes(data);
     for (let i = 0; i < data.count; i++) {
       if (data.articleLikeList[i].userId === userId) {
@@ -92,8 +86,7 @@ const ArticleModal = () => {
     if (articleOpen) {
       setIsLoading(true);
       if (article?.articleId) {
-        getArticleMedia(article.articleId);
-        getArticleComments(article.articleId);
+        getArticleComments(article.articleId, 0, 10);
         checkLike(article.articleId);
       }
       setIsLoading(false);
@@ -143,7 +136,7 @@ const ArticleModal = () => {
                 </>
               ) : (
                 <Media
-                  media={mediaList}
+                  media={article?.mediaList}
                   setMentionList={setMentionList}
                   showMentions={showMentions}
                   setShowMentions={setShowMentions}
@@ -168,7 +161,7 @@ const ArticleModal = () => {
               >
                 <img
                   alt="profile"
-                  src={articleAuthor?.profilePic}
+                  src={article?.author.profilePictureUrl}
                   style={{
                     width: "32px",
                     height: "32px",
@@ -176,7 +169,7 @@ const ArticleModal = () => {
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    openProfile(articleAuthor?.userId);
+                    openProfile(article?.author.userId);
                   }}
                 />
                 <Grid
@@ -193,10 +186,10 @@ const ArticleModal = () => {
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      openProfile(articleAuthor?.userId);
+                      openProfile(article?.author.userId);
                     }}
                   >
-                    {articleAuthor?.userId}
+                    {article?.author.userName}
                   </b>
                   {!!article?.location && (
                     <Typography
@@ -208,10 +201,10 @@ const ArticleModal = () => {
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        openLocation(article.location);
+                        openLocation(article?.location);
                       }}
                     >
-                      {article.location}
+                      {article?.location}
                     </Typography>
                   )}
                 </Grid>
@@ -233,7 +226,7 @@ const ArticleModal = () => {
                   <Grid container direction="row">
                     <img
                       alt="profile"
-                      src={articleAuthor?.profilePic}
+                      src={article?.author.profilePictureUrl}
                       style={{
                         width: "32px",
                         height: "32px",
@@ -241,7 +234,7 @@ const ArticleModal = () => {
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        openProfile(articleAuthor?.userId);
+                        openProfile(article?.author.userId);
                       }}
                     />
                     <b
@@ -252,10 +245,10 @@ const ArticleModal = () => {
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        openProfile(articleAuthor?.userId);
+                        openProfile(article?.author.userId);
                       }}
                     >
-                      {articleAuthor?.userId}
+                      {article?.author.userName}
                     </b>
                   </Grid>
                   <p>{article?.text}</p>
@@ -323,12 +316,12 @@ const ArticleModal = () => {
                     marginBottom: "10px",
                   }}
                   onClick={() => {
-                    setUserList(likes.articleLikeList);
+                    setUserList(likes);
                     setListType("likes");
                     setListOpen(true);
                   }}
                 >
-                  <b>좋아요 {likes?.count + likeChange}개</b>
+                  <b>좋아요 {article?.likeCount + likeChange}개</b>
                 </Button>
               </Grid>
               <Grid

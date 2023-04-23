@@ -4,6 +4,7 @@ import { UserContext } from "../../context/context";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import { getUser } from "../../api/user/get-user";
+import { getArticle } from "../../api/article/get-article";
 
 const ArticleBlock = ({ article }) => {
   const { setArticle, setArticleAuthor, setArticleOpen } =
@@ -12,9 +13,10 @@ const ArticleBlock = ({ article }) => {
   return (
     <Button
       onClick={async () => {
-        const profileInfo = await getUser(article?.userId);
+        const profileInfo = await getUser(article?.author.userId);
         setArticleAuthor(profileInfo);
-        setArticle(article);
+        const modalArticle = await getArticle(article?.articleId)
+        setArticle(modalArticle);
         setArticleOpen(true);
         setHover(false);
       }}
@@ -63,7 +65,7 @@ const ArticleBlock = ({ article }) => {
           >
             <FavoriteIcon style={{ width: "30px", height: "30px" }} />
             <Typography style={{ paddingTop: "3px" }}>
-              <b>{article?.likes}</b>
+              <b>{article?.likeCount}</b>
             </Typography>
           </Grid>
           <div style={{ width: "10px" }} />
@@ -75,7 +77,7 @@ const ArticleBlock = ({ article }) => {
           >
             <ModeCommentIcon style={{ width: "30px", height: "30px" }} />
             <Typography style={{ paddingTop: "3px" }}>
-              <b>{article?.comments}</b>
+              <b>{article?.commentCount}</b>
             </Typography>
           </Grid>
         </Grid>

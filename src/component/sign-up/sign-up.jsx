@@ -7,10 +7,10 @@ import { UserContext } from "../../context/context";
 
 const SignUp = () => {
   const { updateInfo } = useContext(UserContext);
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
-  const [name, setName] = useState("");
-  const [introduction, setIntroduction] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [bio, setBio] = useState("");
   const [profilePicFile, setProfilePicFile] = useState();
   const [profilePicUrl, setProfilePicUrl] = useState("");
   const [url, setUrl] = useState("");
@@ -93,22 +93,22 @@ const SignUp = () => {
         <div style={{ height: "30px" }} />
         <TextField
           label="아이디"
-          id="id"
+          id="username"
           variant="outlined"
-          value={id}
+          value={username}
           onChange={(e) => {
-            setId(e.target.value);
+            setUsername(e.target.value);
           }}
         />
         <div style={{ height: "10px" }} />
         <TextField
           label="비밀번호"
-          id="pw"
+          id="password"
           variant="outlined"
           type="password"
-          value={pw}
+          value={password}
           onChange={(e) => {
-            setPw(e.target.value);
+            setPassword(e.target.value);
           }}
         />
         <div style={{ height: "10px" }} />
@@ -116,19 +116,19 @@ const SignUp = () => {
           label="성명"
           id="name"
           variant="outlined"
-          value={name}
+          value={fullName}
           onChange={(e) => {
-            setName(e.target.value);
+            setFullName(e.target.value);
           }}
         />
         <div style={{ height: "10px" }} />
         <TextField
           label="자기소개"
-          id="introduction"
+          id="bio"
           variant="outlined"
-          value={introduction}
+          value={bio}
           onChange={(e) => {
-            setIntroduction(e.target.value);
+            setBio(e.target.value);
           }}
         />
         <div style={{ height: "10px" }} />
@@ -147,15 +147,17 @@ const SignUp = () => {
         <Button
           variant="contained"
           onClick={async () => {
-            await signUp({
-              introduction,
-              name,
-              profilePicFile,
-              pw,
-              url,
-              id,
+            console.log("signing up");
+            const tokens = await signUp({
+              userName: username,
+              fullName: fullName,
+              password: password,
+              bio: bio,
+              url: url,
+              profilePicFile: profilePicFile,
             });
-            const userInfo = await login(id, pw);
+            console.log(tokens);
+            const userInfo = await login(username, password);
             await updateInfo(userInfo);
             if (userInfo) {
               navigate("/");

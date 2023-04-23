@@ -6,7 +6,8 @@ import { UserContext } from "../../context/context";
 import LogoTypo from "../../media/logo_typo.png";
 
 const Login = () => {
-  const { updateInfo } = useContext(UserContext);
+  const { updateInfo, setAccessToken, setRefreshToken } =
+    useContext(UserContext);
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const [isValid, setIsValid] = useState(false);
@@ -20,10 +21,10 @@ const Login = () => {
 
   const onClick = async (e) => {
     const newUser = await login(id, pw);
-    await updateInfo(newUser);
-    if (newUser) {
-      navigate("/");
-    }
+    await updateInfo();
+    setAccessToken(localStorage.getItem("accessToken"));
+    setRefreshToken(localStorage.getItem("refreshToken"));
+    navigate("/");
   };
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const Login = () => {
   }, [id, pw]);
 
   useEffect(() => {
-    if (localStorage.length >= 6) {
+    if (!!localStorage.getItem("accessToken")) {
       navigate("/");
     }
   }, []);

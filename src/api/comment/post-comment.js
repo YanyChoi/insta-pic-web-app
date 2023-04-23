@@ -3,37 +3,13 @@ import { API } from "../../utils/prefix";
 
 export const postRootComment = async ({
   articleId,
-  userId,
-  mentionedId,
-  text,
-  parentCommentId = null,
+  body
 }) => {
-  const request = `${API}/comment`;
-  let body;
-  if (mentionedId) {
-    body = {
-      articleId: articleId,
-      mentionedId: mentionedId,
-      parentCommentId: parentCommentId,
-      userId: userId,
-      text: text,
-    };
-  } else {
-    body = {
-      articleId: articleId,
-      parentCommentId: parentCommentId,
-      userId: userId,
-      text: text,
-    };
-  }
-  const response = await Axios.post(request, body);
+  const request = `${API}/article/${articleId}/comment`;
+  const response = await Axios.post(request, body, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    }
+  });
   return response.data;
 };
-
-// {
-//     "articleId": 0,
-//     "mentionedId": "string",
-//     "parentCommentId": 0,
-//     "text": "string",
-//     "userId": "string"
-//   }

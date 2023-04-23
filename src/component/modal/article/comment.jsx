@@ -31,8 +31,8 @@ const Comment = ({ comment, onChange }) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const navigate = useNavigate();
   const getCommentLikes = async (commentId) => {
-    const data = await getCommentLike(commentId);
-    setCommentLikes(data.commentLikeList);
+    const data = await getCommentLike(commentId, 0, 10);
+    setCommentLikes(data);
   };
 
   useEffect(() => {

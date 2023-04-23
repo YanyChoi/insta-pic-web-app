@@ -8,16 +8,19 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import ArticleBlock from "./article-block";
 
 const LocationArticlePage = (props) => {
-  const { profileId, location } = useContext(UserContext);
+  const { userId, location, updateInfo } = useContext(UserContext);
   const [articles, setArticles] = useState();
   const initialize = async () => {
-    const fetchArticle = await getArticleListByLocation(location);
+    if (!!!userId) {
+      updateInfo()
+    }
+    const fetchArticle = await getArticleListByLocation(location, 0, 10);
     setArticles(fetchArticle);
   };
 
   useEffect(() => {
     initialize();
-  }, [profileId]);
+  }, []);
 
   return (
     <>
@@ -56,13 +59,13 @@ const LocationArticlePage = (props) => {
               </p>
             </Grid>
             <Grid container direction="row">
-              <b>게시물 {articles?.count}</b>
+              {/* <b>게시물 {articles?.count}</b> */}
               <div style={{ width: "30px" }}></div>
             </Grid>
           </Grid>
         </Grid>
         <div>
-          {articles?.articleList.map((article, index) => {
+          {articles?.map((article, index) => {
             return <ArticleBlock key={index} article={article} />;
           })}
         </div>

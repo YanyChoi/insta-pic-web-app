@@ -10,7 +10,6 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useContext, useEffect, useState } from "react";
 import { getUser } from "../../api/user/get-user";
 import { getFollowing } from "../../api/follow/get-follow";
-import { getMedia } from "../../api/media/get-media";
 import { useNavigate } from "react-router-dom";
 import { getArticleLike } from "../../api/like/get-like";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -53,13 +52,10 @@ const Article = ({ article }) => {
   const navigate = useNavigate();
   const getUserInfo = async (userId) => {
     const data = await getUser(userId);
+    console.log(data)
     setAuthor(data);
   };
 
-  const getArticleMedia = async (articleId) => {
-    const data = await getMedia(articleId);
-    setMedia(data.media);
-  };
 
   const checkFollow = async () => {
     const result = await getFollowing(userId);
@@ -101,7 +97,6 @@ const Article = ({ article }) => {
 
   useEffect(() => {
     getUserInfo(article.userId);
-    getArticleMedia(article.articleId);
     checkFollow();
     checkLike(article.articleId);
   }, []);
@@ -155,9 +150,9 @@ const Article = ({ article }) => {
             <Grid direction="row" container>
               <img
                 alt="author"
-                src={author?.profilePic}
+                src={article?.author.profilePictureUrl}
                 onClick={() => {
-                  openProfile(article.userId);
+                  openProfile(article?.author.userId);
                 }}
                 style={{
                   width: "42px",
@@ -175,16 +170,16 @@ const Article = ({ article }) => {
               >
                 <p
                   onClick={() => {
-                    openProfile(article.userId);
+                    openProfile(article?.author.userId);
                   }}
                   style={{
                     marginBottom: "0px",
                     marginRight: "10px",
-                    marginTop: !!article.location ? "10px" : "20px",
+                    marginTop: !!article?.location ? "10px" : "20px",
                     cursor: "pointer",
                   }}
                 >
-                  <b>{article.userId}</b>
+                  <b>{article.author.userName}</b>
                 </p>
                 {!!article.location && (
                   <Typography
@@ -216,7 +211,7 @@ const Article = ({ article }) => {
               </Button>
             )} */}
           </Grid>
-          {userId === article?.userId && (
+          {userId === article?.author.userId && (
             <IconButton
               style={{
                 width: "40px",
@@ -238,7 +233,7 @@ const Article = ({ article }) => {
           )}
         </Grid>
         <Media
-          media={media}
+          media={article.mediaList}
           setMentionList={setMentionList}
           showMentions={showMentions}
           setShowMentions={setShowMentions}
@@ -299,13 +294,13 @@ const Article = ({ article }) => {
               marginBottom: "10px",
             }}
             onClick={async () => {
-              const data = await getArticleLike(article.articleId);
-              setUserList(data.articleLikeList);
+              const data = await getArticleLike(article.articleId, 0, 10);
+              setUserList(data);
               setListType("likes");
               setListOpen(true);
             }}
           >
-            <b>좋아요 {likes?.count + likeChange}개</b>
+            <b>좋아요 {article.likeCount + likeChange}개</b>
           </Button>
         </Grid>
         <Grid

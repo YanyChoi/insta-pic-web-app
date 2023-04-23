@@ -41,7 +41,10 @@ const PostModal = () => {
   };
 
   const onSubmit = async () => {
-    const postedArticle = await postArticle({ location, text, userId });
+    const postedArticle = await postArticle(userId, {
+      location: location,
+      text: text,
+    });
     mediaList.forEach(async (media, index) => {
       await postMedia(media, mediaMentions[index], postedArticle.articleId);
     });

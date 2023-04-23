@@ -9,22 +9,22 @@ import UserListModal from "../modal/userlist";
 import EmptyBox from "../../media/empty_box.png";
 
 const Home = () => {
-  const { userId } = useContext(UserContext);
+  const { accessToken, updateInfo } = useContext(UserContext);
 
   const [articleList, setArticleList] = useState([]);
   const navigate = useNavigate();
-  const getArticleList = async (userId) => {
-    const articles = await getFeedArticlesByUser(userId);
-    setArticleList(articles.articleList);
-    return articles;
+  const initialize = async () => {
+    if (!localStorage.getItem("accessToken")) {
+      navigate("/login");
+    }
+    const userId = await updateInfo();
+    const articles = await getFeedArticlesByUser(userId, 0, 10);
+    setArticleList(articles);
   };
 
   useEffect(() => {
-    if (localStorage.length < 6) {
-      navigate("/login");
-    }
-    getArticleList(userId);
-  }, [userId]);
+    initialize();
+  }, []);
 
   return (
     <>
@@ -37,7 +37,7 @@ const Home = () => {
           marginLeft: "100px",
         }}
       >
-        {articleList.length > 0 ? (
+        {articleList?.length > 0 ? (
           articleList.map((article, index) => (
             <Article key={index} article={article} />
           ))

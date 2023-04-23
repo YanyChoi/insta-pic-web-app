@@ -17,6 +17,7 @@ import ArticleBlock from "./article-block";
 const Profile = () => {
   const {
     userId,
+    updateInfo,
     setListOpen,
     setListType,
     setUserList,
@@ -31,19 +32,24 @@ const Profile = () => {
   const [userFollows, setUserFollows] = useState(false);
 
   const initialize = async () => {
+    if (!userId) {
+      updateInfo();
+      console.log(userId)
+    }
     const fetchProfile = await getUser(profileId);
     setProfileInfo(fetchProfile);
-    const fetchArticle = await getArticleListByUser(profileId);
+    const fetchArticle = await getArticleListByUser(profileId, 0, 10);
+    console.log(fetchArticle);
     setArticles(fetchArticle);
-    const fetchFollowers = await getFollowers(profileId);
+    const fetchFollowers = await getFollowers(profileId, 0, 10);
     setFollowers(fetchFollowers);
-    const fetchFollowing = await getFollowing(profileId);
+    const fetchFollowing = await getFollowing(profileId, 0, 10);
     setFollowing(fetchFollowing);
-    const fetchNeighbors = await getNeighbors(userId, profileId);
+    const fetchNeighbors = await getNeighbors(profileId, 0, 10);
     setNeighbors(fetchNeighbors);
 
-    for (let i = 0; i < fetchFollowers?.followList.length; i++) {
-      if (fetchFollowers.followList[i].userId === userId) {
+    for (let i = 0; i < fetchFollowers?.length; i++) {
+      if (fetchFollowers[i].userId === userId) {
         setUserFollows(true);
       }
     }
@@ -79,7 +85,7 @@ const Profile = () => {
         >
           <img
             alt="profile"
-            src={profileInfo?.profilePic}
+            src={profileInfo?.profilePictureUrl}
             style={{
               width: "150px",
               height: "150px",
@@ -98,7 +104,7 @@ const Profile = () => {
                   marginTop: "0px",
                 }}
               >
-                {profileId}
+                {profileInfo?.userName}
               </p>
               {!(userId === profileId) && (
                 <Button
@@ -140,7 +146,7 @@ const Profile = () => {
                 팔로우 {following?.count}
               </b>
             </Grid>
-            <h3>{profileInfo?.name}</h3>
+            <h3>{profileInfo?.fullName}</h3>
             <a href={profileInfo?.url}>
               <p style={{ marginTop: "0", fontSize: "14px" }}>
                 {profileInfo?.url}
@@ -185,7 +191,7 @@ const Profile = () => {
           </Grid>
         </Grid>
         <div>
-          {articles?.articleList.map((article, index) => (
+          {articles?.map((article, index) => (
             <ArticleBlock key={index} article={article} />
           ))}
         </div>

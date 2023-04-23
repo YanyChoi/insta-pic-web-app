@@ -2,31 +2,31 @@ import Axios from "axios";
 import { API } from "../../utils/prefix";
 
 export const signUp = async ({
-  introduction,
-  name,
-  profilePicFile,
-  pw,
+  userName,
+  fullName,
+  password,
+  bio,
   url,
-  id,
+  profilePicFile
 }) => {
   const body = new FormData();
 
   const json = {
-    introduction: introduction,
-    name: name,
-    pw: pw,
-    url: url,
-    userId: id,
+    userName: userName,
+    fullName: fullName,
+    pw: password,
+    bio: bio,
+    url: url
   };
 
   const userDraft = new Blob([JSON.stringify(json)], {
     type: "application/json",
   });
-  body.append("userDraft", userDraft);
+  body.append("body", userDraft);
 
-  body.append("profilePic", profilePicFile, profilePicFile.name);
+  body.append("profilePicture", profilePicFile, profilePicFile.name);
 
-  const request = `${API}/user/signup`;
+  const request = `${API}/signup`;
 
   const response = await Axios.post(request, body, {
     headers: {

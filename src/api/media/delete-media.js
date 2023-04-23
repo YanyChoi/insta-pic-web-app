@@ -3,12 +3,11 @@ import { API } from "../../utils/prefix";
 
 const request = `${API}/media`;
 
-export const deleteSingleMedia = async (mediaId) => {
-  const response = await Axios.delete(`${request}/mediaId=${mediaId}`);
-  return response.data;
-};
-
-export const deleteMultipleMedia = async (articleId) => {
-  const response = await Axios.delete(`${request}/articleId=${articleId}`);
+export const deleteMedia = async (mediaId) => {
+  const response = await Axios.delete(`${request}/media/${mediaId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    }
+  });
   return response.data;
 };
